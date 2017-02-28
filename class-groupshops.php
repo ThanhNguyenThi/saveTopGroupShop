@@ -1,40 +1,20 @@
 <?php
 
 /**
- * Plugin Name:         WC Vendors
- * Plugin URI:          https://www.wcvendors.com
+ * Plugin Name:         Group Shops
+ * Plugin URI:          http://topgroupshops.com.vn/
  * Description:         Allow vendors to sell their own products and receive a commission for each sale. 
- * Author:              WC Vendors
- * Author URI:          https://www.wcvendors.com
- * GitHub Plugin URI:   https://github.com/wcvendors/wcvendors
+ * Author:              Thanh Nguyen
+ * Author URI:          http://topgroupshops.com.vn/
+ * GitHub Plugin URI:   https://github.com/ThanhNguyenThi/saveTopGroupShop
  *
- * Version:             1.9.8
+ * Version:             1.0.0
  * Requires at least:   4.4.0
  * Tested up to:        4.7.1
  *
- * Text Domain:         wcvendors
+ * Text Domain:         topgroupshops
  * Domain Path:         /languages/
  *
- * @category            Plugin
- * @copyright           Copyright © 2012 Matt Gates
- * @copyright           Copyright © 2017 WC Vendors
- * @author              Matt Gates, WC Vendors
- * @package             WCVendors
- * @license     		GPL2
-
-WC Vendors is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 2 of the License, or
-any later version.
- 
-WC Vendors is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-GNU General Public License for more details.
- 
-You should have received a copy of the GNU General Public License
-along with WC Vendors. If not, see http://www.gnu.org/licenses/gpl-2.0.txt.
-
 */
 
 
