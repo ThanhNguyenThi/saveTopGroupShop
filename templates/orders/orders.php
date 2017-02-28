@@ -50,7 +50,7 @@ global $woocommerce; ?>
 																 'item'     => $item,
 																 'count'    => $count,
 																 'order_id' => $order_id,
-															), 'wc-vendors/orders/', wcv_plugin_dir . 'templates/orders/' );
+															), 'groupshops/orders/', tgs_plugin_dir . 'templates/orders/' );
 
 			}
 
@@ -58,7 +58,7 @@ global $woocommerce; ?>
 				$customer_note = $order[ 'comments' ];
 				wc_get_template( 'customer-note.php', array(
 																	'customer_note' => $customer_note,
-															   ), 'wc-vendors/orders/customer-note/', wcv_plugin_dir . 'templates/orders/customer-note/' );
+															   ), 'groupshops/orders/customer-note/', tgs_plugin_dir . 'templates/orders/customer-note/' );
 			}
 
 			?>
@@ -67,8 +67,8 @@ global $woocommerce; ?>
 			<td colspan="100%">
 
 				<?php
-				$can_view_comments = WC_Vendors::$pv_options->get_option( 'can_view_order_comments' );
-				$can_add_comments = WC_Vendors::$pv_options->get_option( 'can_submit_order_comments' );
+				$can_view_comments = TGS_Vendors::$pv_options->get_option( 'can_view_order_comments' );
+				$can_add_comments = TGS_Vendors::$pv_options->get_option( 'can_submit_order_comments' );
 
 				if ($can_view_comments || $can_add_comments) :
 
@@ -81,7 +81,7 @@ global $woocommerce; ?>
 				?>
 				<a href="#" class="order-comments-link">
 					<p>
-						<?php printf( __( 'Comments (%s)', 'wcvendors' ), count( $comments ) ); ?>
+						<?php printf( __( 'Comments (%s)', 'topgroupshops' ), count( $comments ) ); ?>
 					</p>
 				</a>
 
@@ -93,14 +93,14 @@ global $woocommerce; ?>
 					if ( $can_view_comments && !empty( $comments ) ) {
 						wc_get_template( 'existing-comments.php', array(
 																				'comments' => $comments,
-																		   ), 'wc-vendors/orders/comments/', wcv_plugin_dir . 'templates/orders/comments/' );
+																		   ), 'groupshops/orders/comments/', tgs_plugin_dir . 'templates/orders/comments/' );
 					}
 
 					if ( $can_add_comments ) {
 						wc_get_template( 'add-new-comment.php', array(
 																			  'order_id'   => $order_id,
 																			  'product_id' => $product_id,
-																		 ), 'wc-vendors/orders/comments/', wcv_plugin_dir . 'templates/orders/comments/' );
+																		 ), 'groupshops/orders/comments/', tgs_plugin_dir . 'templates/orders/comments/' );
 					}
 
 					?>
@@ -112,14 +112,14 @@ global $woocommerce; ?>
 
 						<a href="#" class="order-tracking-link">
 							<p>
-								<?php _e( 'Shipping', 'wcvendors' ); ?>
+								<?php _e( 'Shipping', 'topgroupshops' ); ?>
 							</p>
 						</a>
 
 						<div class="order-tracking">
 							<?php 
 							if ( function_exists( 'wc_enqueue_js' ) ) {
-								wc_enqueue_js( WCV_Vendor_dashboard::wc_st_js( $provider_array ) );
+								wc_enqueue_js( TGS_Vendor_dashboard::wc_st_js( $provider_array ) );
 							} else {
 								$woocommerce->add_inline_js( $js );
 							}
@@ -129,7 +129,7 @@ global $woocommerce; ?>
 																				'product_id'     => $product_id,
 																				'providers'      => $providers,
 																				'provider_array' => $provider_array, 
-																		   ), 'wc-vendors/orders/shipping/', wcv_plugin_dir . 'templates/orders/shipping/' );
+																		   ), 'groupshops/orders/shipping/', tgs_plugin_dir . 'templates/orders/shipping/' );
 							?>
 						</div>
 

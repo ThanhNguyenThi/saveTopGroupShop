@@ -72,9 +72,9 @@
 	<input type="hidden" name="order_id" value="<?php echo $order_id; ?>">
 
 	<input class="button" type="submit" name="update_tracking"
-		   value="<?php _e( 'Update tracking number', 'wcvendors' ); ?>">
+		   value="<?php _e( 'Update tracking number', 'topgroupshops' ); ?>">
 	<input class="button" type="submit" name="mark_shipped"
-		   value="<?php _e( 'Mark as shipped', 'wcvendors' ); ?>">
+		   value="<?php _e( 'Mark as shipped', 'topgroupshops' ); ?>">
 
 </form>
 

@@ -4,9 +4,9 @@
  *
  *  THIS FILE WILL LOAD ON VENDORS INDIVIDUAL PRODUCT URLs (such as yourdomain.com/shop/product-name/)
  *
- * @author WCVendors
- * @package WCVendors
- * @version 1.3.0
+ * @author Thanh Nguyen
+ * @package groupshops
+ * @version 1.0.0
  */
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly 
 
@@ -24,6 +24,6 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 ?>
 
 <h1><?php echo $shop_name; ?></h1>
-<div class="wcv_shop_description">
+<div class="tgs_shop_description">
 <?php echo $shop_description; ?>
 </div>
