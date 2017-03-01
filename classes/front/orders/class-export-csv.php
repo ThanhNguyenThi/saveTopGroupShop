@@ -1,6 +1,6 @@
 <?php
 
-class WCV_Export_CSV
+class TGS_Export_CSV
 {
 
 	/**
@@ -16,8 +16,8 @@ class WCV_Export_CSV
 	public static function output_csv( $product_id, $headers, $body, $items )
 	{
 
-		$headers[ 'quantity' ] = __( 'Quantity', 'wcvendors' );
-		$headers[ 'item_meta' ] = __( 'Item Meta', 'wcvendors' );
+		$headers[ 'quantity' ] = __( 'Quantity', 'topgroupshops' );
+		$headers[ 'item_meta' ] = __( 'Item Meta', 'topgroupshops' );
 
 		$new_body = array(); 
 
@@ -50,7 +50,7 @@ class WCV_Export_CSV
 				$new_row_with_meta[] = $item[ 'qty' ];
 				// Add the new item meta row 
 				
-				$variation_detail = !empty( $item['variation_id'] ) ? WCV_Orders::get_variation_data( $item[ 'variation_id' ] ) : ''; 
+				$variation_detail = !empty( $item['variation_id'] ) ? TGS_Orders::get_variation_data( $item[ 'variation_id' ] ) : ''; 
 
 				$new_row_with_meta[] = $variation_detail; 
 				$new_row_with_meta['product'] =  $item[ 'name' ]; 
@@ -58,10 +58,10 @@ class WCV_Export_CSV
 			}
 		}		
 
-		$headers = apply_filters( 'wcvendors_csv_headers', $headers, $product_id, $items );
-		$body    = apply_filters( 'wcvendors_csv_body', $new_body, $product_id, $items );
+		$headers = apply_filters( 'topgroupshops_csv_headers', $headers, $product_id, $items );
+		$body    = apply_filters( 'topgroupshops_csv_body', $new_body, $product_id, $items );
 
-		WCV_Export_CSV::download( $headers, $body, $product_id );
+		TGS_Export_CSV::download( $headers, $body, $product_id );
 	}
 
 

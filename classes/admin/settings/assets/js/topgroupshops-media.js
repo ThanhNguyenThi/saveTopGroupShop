@@ -3,12 +3,12 @@ jQuery( function( $ ){
 	var id; 	
 
 	// Iterate over all instances of the uploader on the page 
-	$('.wcv-img-id').each( function () {
+	$('.tgs-img-id').each( function () {
 	    
 	    id = $( this ).data( 'id' ); 
 
 	    // Handle Add banner
-		$( '#wcv-add-' + id ).on( 'click', function(e) { 
+		$( '#tgs-add-' + id ).on( 'click', function(e) { 
 			e.preventDefault(); 
 			file_uploader( id ); 
 			return false; 
@@ -27,9 +27,9 @@ jQuery( function( $ ){
 		}
 
 	    media_uploader = wp.media({
-      		title: $( '#wcv-add-' + id ).data('window_title'), 
+      		title: $( '#tgs-add-' + id ).data('window_title'), 
       		button: {
-        		text: $( '#wcv-add-' + id ).data('save_button'), 
+        		text: $( '#tgs-add-' + id ).data('save_button'), 
       		},
       		multiple: false  // Set to true to allow multiple files to be selected
     	});
@@ -42,7 +42,7 @@ jQuery( function( $ ){
 		        return;
 		    }
 
-		    $( '.wcv-image-container-' + id ).prop( 'src', json.sizes.full.url ); 		    
+		    $( '.tgs-image-container-' + id ).prop( 'src', json.sizes.full.url ); 		    
 		    $( '#' + id ).val( json.sizes.full.url ); 
 
 	    });

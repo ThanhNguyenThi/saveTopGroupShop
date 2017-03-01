@@ -1,15 +1,14 @@
 <?php
 
 /**
- * WCV Vendor Dashboard 
+ * Group Shops Dashboard 
  *
- * @author  Matt Gates <http://mgates.me>
- * @author  Jamie Madden <http://wcvendors.com>
- * @package WCVendors 
+ * @author  Thanh Nguyen <http://topgroupshops.com.vn>
+ * @package groupshops 
  */
 
 
-class WCV_Vendor_Dashboard
+class TGS_Vendor_Dashboard
 {
 
 
@@ -18,8 +17,8 @@ class WCV_Vendor_Dashboard
 	 */
 	function __construct()
 	{
-		add_shortcode( 'wcv_shop_settings', array( $this, 'display_vendor_settings' ) );
-		add_shortcode( 'wcv_vendor_dashboard', array( $this, 'display_vendor_products' ) );
+		add_shortcode( 'tgs_shop_settings', array( $this, 'display_vendor_settings' ) );
+		add_shortcode( 'tgs_vendor_dashboard', array( $this, 'display_vendor_products' ) );
 
 		add_action( 'template_redirect', array( $this, 'check_access' ) );
 		add_action( 'init', array( $this, 'save_vendor_settings' ) );
@@ -34,10 +33,10 @@ class WCV_Vendor_Dashboard
 		if ( !empty( $_GET['wc_pv_mark_shipped'] ) ) {
 			$order_id = $_GET['wc_pv_mark_shipped'];
 			$order = wc_get_order( $order_id );
-			$vendors = WCV_Vendors::get_vendors_from_order( $order );
+			$vendors = TGS_Function_Vendors::get_vendors_from_order( $order );
 			$vendor_ids = array_keys( $vendors );
 			if ( !in_array( $user_id, $vendor_ids ) ) {
-				wc_add_notice( __( 'You are not allowed to modify this order.', 'wcvendors' ) );
+				wc_add_notice( __( 'You are not allowed to modify this order.', 'topgroupshops' ) );
 				return null; 
 			}
 			$shippers = (array) get_post_meta( $order_id, 'wc_pv_shipped', true );
@@ -49,10 +48,10 @@ class WCV_Vendor_Dashboard
 				if ( !empty( $mails ) ) {
 					$mails[ 'WC_Email_Notify_Shipped' ]->trigger( $order_id, $user_id );
 				}
-				do_action('wcvendors_vendor_ship', $order_id, $user_id);
-				wc_add_notice( __( 'Order marked shipped.', 'wcvendors' ), 'success' );
-				$shop_name = WCV_Vendors::get_vendor_shop_name( $user_id );
-				$order->add_order_note( apply_filters( 'wcvendors_vendor_shipped_note', sprintf( __(  '%s has marked as shipped. ', 'wcvendors'), $shop_name ) ), $user_id, $shop_name ); 
+				do_action('topgroupshops_vendor_ship', $order_id, $user_id);
+				wc_add_notice( __( 'Order marked shipped.', 'topgroupshops' ), 'success' );
+				$shop_name = TGS_Function_Vendors::get_vendor_shop_name( $user_id );
+				$order->add_order_note( apply_filters( 'topgroupshops_vendor_shipped_note', sprintf( __(  '%s has marked as shipped. ', 'topgroupshops'), $shop_name ) ), $user_id, $shop_name ); 
 			} elseif ( false != ( $key = array_search( $user_id, $shippers) ) ) {
 				unset( $shippers[$key] ); // Remove user from the shippers array
  			}
@@ -80,10 +79,10 @@ class WCV_Vendor_Dashboard
 				}
 			}
 			if ( $order_item_id ) {
-				woocommerce_delete_order_item_meta( $order_item_id, __( 'Tracking number', 'wcvendors' ) );
-				woocommerce_add_order_item_meta( $order_item_id, __( 'Tracking number', 'wcvendors' ), $tracking_number );
+				woocommerce_delete_order_item_meta( $order_item_id, __( 'Tracking number', 'topgroupshops' ) );
+				woocommerce_add_order_item_meta( $order_item_id, __( 'Tracking number', 'topgroupshops' ), $tracking_number );
 
-				$message = __( 'Success. Your tracking number has been updated.', 'wcvendors' );
+				$message = __( 'Success. Your tracking number has been updated.', 'topgroupshops' );
 				wc_add_notice( $message, 'success' );
 
 				// Update order data
@@ -109,7 +108,7 @@ class WCV_Vendor_Dashboard
 
 			if ( isset( $_POST[ 'pv_paypal' ] ) ) {
 				if ( !is_email( $_POST[ 'pv_paypal' ] ) ) {
-					wc_add_notice( __( 'Your PayPal address is not a valid email address.', 'wcvendors' ), 'error' );
+					wc_add_notice( __( 'Your PayPal address is not a valid email address.', 'topgroupshops' ), 'error' );
 				} else {
 					update_user_meta( $user_id, 'pv_paypal', $_POST[ 'pv_paypal' ] );
 				}
@@ -118,7 +117,7 @@ class WCV_Vendor_Dashboard
 			if ( !empty( $_POST[ 'pv_shop_name' ] ) ) {
 				$users = get_users( array( 'meta_key' => 'pv_shop_slug', 'meta_value' => sanitize_title( $_POST[ 'pv_shop_name' ] ) ) );
 				if ( !empty( $users ) && $users[ 0 ]->ID != $user_id ) {
-					wc_add_notice( __( 'That shop name is already taken. Your shop name must be unique.', 'wcvendors' ), 'error' ); 
+					wc_add_notice( __( 'That shop name is already taken. Your shop name must be unique.', 'topgroupshops' ), 'error' ); 
 				} else {
 					update_user_meta( $user_id, 'pv_shop_name', $_POST[ 'pv_shop_name' ] );
 					update_user_meta( $user_id, 'pv_shop_slug', sanitize_title( $_POST[ 'pv_shop_name' ] ) );
@@ -133,10 +132,10 @@ class WCV_Vendor_Dashboard
 				update_user_meta( $user_id, 'pv_seller_info', $_POST[ 'pv_seller_info' ] );
 			}
 
-			do_action( 'wcvendors_shop_settings_saved', $user_id );
+			do_action( 'topgroupshops_shop_settings_saved', $user_id );
 
 			if ( !wc_notice_count() ) {
-				wc_add_notice( __( 'Settings saved.', 'wcvendors' ), 'success' );
+				wc_add_notice( __( 'Settings saved.', 'topgroupshops' ), 'success' );
 			}
 		}
 	}
@@ -147,8 +146,8 @@ class WCV_Vendor_Dashboard
 	 */
 	public function check_access()
 	{
-		$vendor_dashboard_page = WC_Vendors::$pv_options->get_option( 'vendor_dashboard_page' );
-		$shop_settings_page    = WC_Vendors::$pv_options->get_option( 'shop_settings_page' );
+		$vendor_dashboard_page = TGS_Vendors::$pv_options->get_option( 'vendor_dashboard_page' );
+		$shop_settings_page    = TGS_Vendors::$pv_options->get_option( 'shop_settings_page' );
 
 		if ( $vendor_dashboard_page && is_page( $vendor_dashboard_page ) || $shop_settings_page && is_page( $shop_settings_page ) ) {
 			if ( !is_user_logged_in() ) {
@@ -161,7 +160,7 @@ class WCV_Vendor_Dashboard
 
 
 	/**
-	 * [wcv_vendor_dashboard] shortcode
+	 * [tgs_vendor_dashboard] shortcode
 	 *
 	 * @param array $atts
 	 *
@@ -174,9 +173,9 @@ class WCV_Vendor_Dashboard
 		$start_date = !empty( $_SESSION[ 'PV_Session' ][ 'start_date' ] ) ? $_SESSION[ 'PV_Session' ][ 'start_date' ] : strtotime( date( 'Ymd', strtotime( date( 'Ym', current_time( 'timestamp' ) ) . '01' ) ) );
 		$end_date   = !empty( $_SESSION[ 'PV_Session' ][ 'end_date' ] ) ? $_SESSION[ 'PV_Session' ][ 'end_date' ] : strtotime( date( 'Ymd', current_time( 'timestamp' ) ) );
 
-		$can_view_orders = WC_Vendors::$pv_options->get_option( 'can_show_orders' );
-		$settings_page   = get_permalink( WC_Vendors::$pv_options->get_option( 'shop_settings_page' ) );
-		$can_submit      = WC_Vendors::$pv_options->get_option( 'can_submit_products' );
+		$can_view_orders = TGS_Vendors::$pv_options->get_option( 'can_show_orders' );
+		$settings_page   = get_permalink( TGS_Vendors::$pv_options->get_option( 'shop_settings_page' ) );
+		$can_submit      = TGS_Vendors::$pv_options->get_option( 'can_submit_products' );
 		$submit_link = ( $can_submit ) ? admin_url( 'post-new.php?post_type=product' ) : '';
 		$edit_link   = ( $can_submit ) ? admin_url( 'edit.php?post_type=product' ) : '';
 
@@ -189,17 +188,17 @@ class WCV_Vendor_Dashboard
 									  'datepicker' => true,
 								 ), $atts ) );
 
-		$vendor_products = WCV_Queries::get_commission_products( $user_id );
+		$vendor_products = TGS_Queries::get_commission_products( $user_id );
 		$products = array();
 		foreach ($vendor_products as $_product) {
 			$products[] = $_product->ID;
 		}
 
 		$vendor_summary  = $this->format_product_details( $vendor_products );
-		$order_summary   = WCV_Queries::get_orders_for_products( $products );
-		$shop_page       = WCV_Vendors::get_vendor_shop_page( wp_get_current_user()->user_login );
+		$order_summary   = TGS_Queries::get_orders_for_products( $products );
+		$shop_page       = TGS_Function_Vendors::get_vendor_shop_page( wp_get_current_user()->user_login );
 
-		wp_enqueue_style( 'wcv_frontend_style', wcv_assets_url . 'css/wcv-frontend.css' );
+		wp_enqueue_style( 'tgs_frontend_style', tgs_assets_url . 'css/tgs-frontend.css' );
 
 		$providers = array(); 
 		$provider_array = array(); 
@@ -217,7 +216,7 @@ class WCV_Vendor_Dashboard
 		}
 
 		ob_start();
-		do_action( 'wcvendors_before_dashboard' );
+		do_action( 'topgroupshops_before_dashboard' );
 
 		wc_print_notices();
 		wc_get_template( 'links.php', array(
@@ -226,9 +225,9 @@ class WCV_Vendor_Dashboard
 													'can_submit'    => $can_submit,
 													'submit_link'   => $submit_link,
 													'edit_link'		=> $edit_link,
-											   ), 'wc-vendors/dashboard/', wcv_plugin_dir . 'templates/dashboard/' );
+											   ), 'groupshops/dashboard/', tgs_plugin_dir . 'templates/dashboard/' );
 
-		if ( $can_view_sales = WC_Vendors::$pv_options->get_option( 'can_view_frontend_reports' ) ) {
+		if ( $can_view_sales = TGS_Vendors::$pv_options->get_option( 'can_view_frontend_reports' ) ) {
 
 		wc_get_template( 'reports.php', array(
 													  'start_date'      => $start_date,
@@ -237,7 +236,7 @@ class WCV_Vendor_Dashboard
 													  'vendor_summary'  => $vendor_summary,
 													  'datepicker'      => $datepicker,
 													  'can_view_orders' => $can_view_orders,
-												 ), 'wc-vendors/dashboard/', wcv_plugin_dir . 'templates/dashboard/' );
+												 ), 'groupshops/dashboard/', tgs_plugin_dir . 'templates/dashboard/' );
 		}
 
 		wc_get_template( 'orders.php', array(
@@ -249,12 +248,12 @@ class WCV_Vendor_Dashboard
 													  'providers'      => $providers,
 													  'provider_array' => $provider_array,
 													  'can_view_orders' => $can_view_orders,
-												 ), 'wc-vendors/dashboard/', wcv_plugin_dir . 'templates/dashboard/' );
-		do_action( 'wcvendors_after_dashboard' );
+												 ), 'groupshops/dashboard/', tgs_plugin_dir . 'templates/dashboard/' );
+		do_action( 'topgroupshops_after_dashboard' );
 
 
 		if ( function_exists( 'wc_enqueue_js' ) ) {
-			wc_enqueue_js( WCV_Vendor_dashboard::wc_st_js( $provider_array ) );
+			wc_enqueue_js( TGS_Vendor_dashboard::wc_st_js( $provider_array ) );
 		} else {
 			$woocommerce->add_inline_js( $js );
 		}
@@ -287,8 +286,8 @@ class WCV_Vendor_Dashboard
 		$description = get_user_meta( $user_id, 'pv_shop_description', true );
 		$seller_info = get_user_meta( $user_id, 'pv_seller_info', true );
 		$has_html    = get_user_meta( $user_id, 'pv_shop_html_enabled', true );
-		$shop_page   = WCV_Vendors::get_vendor_shop_page( wp_get_current_user()->user_login );
-		$global_html = WC_Vendors::$pv_options->get_option( 'shop_html_enabled' );
+		$shop_page   = TGS_Function_Vendors::get_vendor_shop_page( wp_get_current_user()->user_login );
+		$global_html = TGS_Vendors::$pv_options->get_option( 'shop_html_enabled' );
 
 		ob_start();
 		wc_get_template( 'settings.php', array(
@@ -300,7 +299,7 @@ class WCV_Vendor_Dashboard
 													   'shop_description' => $shop_description,
 													   'shop_page'        => $shop_page,
 													   'user_id'          => $user_id,
-												  ), 'wc-vendors/dashboard/settings/', wcv_plugin_dir . 'templates/dashboard/settings/' );
+												  ), 'groupshops/dashboard/settings/', tgs_plugin_dir . 'templates/dashboard/settings/' );
 
 		return ob_get_clean();
 	}
@@ -317,9 +316,9 @@ class WCV_Vendor_Dashboard
 
 			return false;
 
-		} else if ( !WCV_Vendors::is_vendor( get_current_user_id() ) ) {
+		} else if ( !TGS_Function_Vendors::is_vendor( get_current_user_id() ) ) {
 
-			wc_get_template( 'denied.php', array(), 'wc-vendors/dashboard/', wcv_plugin_dir . 'templates/dashboard/' );
+			wc_get_template( 'denied.php', array(), 'groupshops/dashboard/', tgs_plugin_dir . 'templates/dashboard/' );
 
 			return false;
 
@@ -341,10 +340,10 @@ class WCV_Vendor_Dashboard
 		if ( empty( $products ) ) return false;
 
 		// This is required to support existing installations after WC 2.6 
-		$orders_page_id 	= (string) WC_Vendors::$pv_options->get_option( 'orders_page' ); 
-		$orders_page_id 	= ( strlen( $orders_page_id ) > 0 ) ? $orders_page_id : WC_Vendors::$pv_options->get_option( 'product_orders_page' ); 
+		$orders_page_id 	= (string) TGS_Vendors::$pv_options->get_option( 'orders_page' ); 
+		$orders_page_id 	= ( strlen( $orders_page_id ) > 0 ) ? $orders_page_id : TGS_Vendors::$pv_options->get_option( 'product_orders_page' ); 
 		$orders_page        = get_permalink( $orders_page_id );
-		$default_commission = WC_Vendors::$pv_options->get_option( 'default_commission' );
+		$default_commission = TGS_Vendors::$pv_options->get_option( 'default_commission' );
 		$total_qty          = $total_cost = 0;
 		$data               = array(
 			'products'   => array(),
@@ -355,13 +354,13 @@ class WCV_Vendor_Dashboard
 		foreach ( $products as $product )
 			$ids[ ] = $product->ID;
 
-		$orders = WCV_Queries::sum_orders_for_products( $ids, array( 'vendor_id' => get_current_user_id() ) );
+		$orders = TGS_Queries::sum_orders_for_products( $ids, array( 'vendor_id' => get_current_user_id() ) );
 
 		if ( $orders )
 			foreach ( $orders as $order_item ) {
 				if ( $order_item->qty < 1 ) continue;
 
-				$commission_rate = WCV_Commission::get_commission_rate( $order_item->product_id );
+				$commission_rate = TGS_Commission::get_commission_rate( $order_item->product_id );
 				$_product        = get_product( $order_item->product_id );
 				$id              = !empty($_product->parent->id) ? $_product->parent->id : $order_item->product_id;
 
@@ -480,30 +479,30 @@ class WCV_Vendor_Dashboard
 	 */
 	public function body_class( $classes ){ 
 
-		$dashboard_page 	= WC_Vendors::$pv_options->get_option( 'vendor_dashboard_page' ); 
+		$dashboard_page 	= TGS_Vendors::$pv_options->get_option( 'vendor_dashboard_page' ); 
 
 		// This is required to support existing installations after WC 2.6 
-		$orders_page_id 	= WC_Vendors::$pv_options->get_option( 'orders_page' ); 
-		$orders_page_id 	= isset( $orders_page_id ) ? $orders_page_id : WC_Vendors::$pv_options->get_option( 'product_orders_page' ); 
+		$orders_page_id 	= TGS_Vendors::$pv_options->get_option( 'orders_page' ); 
+		$orders_page_id 	= isset( $orders_page_id ) ? $orders_page_id : TGS_Vendors::$pv_options->get_option( 'product_orders_page' ); 
 
 		$orders_page 		= $orders_page_id; 
-		$shop_settings 		= WC_Vendors::$pv_options->get_option( 'shop_settings_page' ); 
-		$terms_page 		= WC_Vendors::$pv_options->get_option( 'terms_to_apply_page' ); 
+		$shop_settings 		= TGS_Vendors::$pv_options->get_option( 'shop_settings_page' ); 
+		$terms_page 		= TGS_Vendors::$pv_options->get_option( 'terms_to_apply_page' ); 
 
 		if ( is_page( $dashboard_page ) ){ 
-			$classes[] = 'wcvendors wcv-vendor-dashboard-page'; 
+			$classes[] = 'topgroupshops tgs-vendor-dashboard-page'; 
 		}
 
 		if ( is_page( $orders_page ) ){ 
-			$classes[] = 'wcvendors wcv-orders-page'; 
+			$classes[] = 'topgroupshops tgs-orders-page'; 
 		}
 
 		if ( is_page( $shop_settings ) ){ 
-			$classes[] = 'wcvendors wcv-shop-settings-page'; 
+			$classes[] = 'topgroupshops tgs-shop-settings-page'; 
 		}
 
 		if ( is_page( $terms_page ) ){ 
-			$classes[] = 'wcvendors wcv-terms-page'; 
+			$classes[] = 'topgroupshops tgs-terms-page'; 
 		}
 
 

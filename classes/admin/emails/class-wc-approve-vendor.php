@@ -25,11 +25,11 @@ class WC_Email_Approve_Vendor extends WC_Email
 	function __construct()
 	{
 		$this->id          = 'vendor_application';
-		$this->title       = __( 'Vendor Application', 'wcvendors' );
-		$this->description = __( 'Vendor application will either be approved, denied, or pending.', 'wcvendors' );
+		$this->title       = __( 'Vendor Application', 'topgroupshops' );
+		$this->description = __( 'Vendor application will either be approved, denied, or pending.', 'topgroupshops' );
 
-		$this->heading = __( 'Application {status}', 'wcvendors' );
-		$this->subject = __( '[{blogname}] Your vendor application has been {status}', 'wcvendors' );
+		$this->heading = __( 'Application {status}', 'topgroupshops' );
+		$this->subject = __( '[{blogname}] Your vendor application has been {status}', 'topgroupshops' );
 
 		$this->template_base  = dirname( dirname( dirname( dirname( __FILE__ ) ) ) ) . '/templates/emails/';
 		$this->template_html  = 'application-status.php';
@@ -67,7 +67,7 @@ class WC_Email_Approve_Vendor extends WC_Email
 
 		$this->send( $user_email, $this->get_subject(), $this->get_content(), $this->get_headers(), $this->get_attachments() );
 
-		if ( $status == __( 'pending', 'wcvendors' ) ) {
+		if ( $status == __( 'pending', 'topgroupshops' ) ) {
 			$this->send( $this->get_recipient(), $this->get_subject(), $this->get_content(), $this->get_headers(), $this->get_attachments() );
 		}
 	}
@@ -120,42 +120,42 @@ class WC_Email_Approve_Vendor extends WC_Email
 	{
 		$this->form_fields = array(
 			'enabled'    => array(
-				'title'   => __( 'Enable/Disable', 'wcvendors' ),
+				'title'   => __( 'Enable/Disable', 'topgroupshops' ),
 				'type'    => 'checkbox',
-				'label'   => __( 'Enable this email notification', 'wcvendors' ),
+				'label'   => __( 'Enable this email notification', 'topgroupshops' ),
 				'default' => 'yes'
 			),
 			'recipient'  => array(
 				'title'       => __( 'Recipient(s)', 'woocommerce' ),
 				'type'        => 'text',
-				'description' => sprintf( __( 'Enter recipients (comma separated) for this email. Defaults to <code>%s</code>.', 'wcvendors' ), esc_attr( get_option( 'admin_email' ) ) ),
+				'description' => sprintf( __( 'Enter recipients (comma separated) for this email. Defaults to <code>%s</code>.', 'topgroupshops' ), esc_attr( get_option( 'admin_email' ) ) ),
 				'placeholder' => '',
 				'default'     => ''
 			),
 			'subject'    => array(
-				'title'       => __( 'Subject', 'wcvendors' ),
+				'title'       => __( 'Subject', 'topgroupshops' ),
 				'type'        => 'text',
-				'description' => sprintf( __( 'This controls the email subject line. Leave blank to use the default subject: <code>%s</code>.', 'wcvendors' ), $this->subject ),
+				'description' => sprintf( __( 'This controls the email subject line. Leave blank to use the default subject: <code>%s</code>.', 'topgroupshops' ), $this->subject ),
 				'placeholder' => '',
 				'default'     => ''
 			),
 			'heading'    => array(
-				'title'       => __( 'Email Heading', 'wcvendors' ),
+				'title'       => __( 'Email Heading', 'topgroupshops' ),
 				'type'        => 'text',
-				'description' => sprintf( __( 'This controls the main heading contained within the email notification. Leave blank to use the default heading: <code>%s</code>.', 'wcvendors' ), $this->heading ),
+				'description' => sprintf( __( 'This controls the main heading contained within the email notification. Leave blank to use the default heading: <code>%s</code>.', 'topgroupshops' ), $this->heading ),
 				'placeholder' => '',
 				'default'     => ''
 			),
 			'email_type' => array(
-				'title'       => __( 'Email type', 'wcvendors' ),
+				'title'       => __( 'Email type', 'topgroupshops' ),
 				'type'        => 'select',
-				'description' => __( 'Choose which format of email to send.', 'wcvendors' ),
+				'description' => __( 'Choose which format of email to send.', 'topgroupshops' ),
 				'default'     => 'html',
 				'class'       => 'email_type',
 				'options'     => array(
-					'plain'     => __( 'Plain text', 'wcvendors' ),
-					'html'      => __( 'HTML', 'wcvendors' ),
-					'multipart' => __( 'Multipart', 'wcvendors' ),
+					'plain'     => __( 'Plain text', 'topgroupshops' ),
+					'html'      => __( 'HTML', 'topgroupshops' ),
+					'multipart' => __( 'Multipart', 'topgroupshops' ),
 				)
 			)
 		);

@@ -1,6 +1,6 @@
 <?php
 
-class WCV_Queries
+class TGS_Queries
 {
 
 	/**
@@ -16,7 +16,7 @@ class WCV_Queries
 	{
 		global $wpdb;
 
-		$dates           = WCV_Queries::orders_within_range();
+		$dates           = TGS_Queries::orders_within_range();
 		$vendor_products = array();
 		$sql = '';
 
@@ -93,10 +93,10 @@ class WCV_Queries
 
 		if ( empty( $product_ids ) ) return false;
 
-		$dates = WCV_Queries::orders_within_range();
+		$dates = TGS_Queries::orders_within_range();
 
 		$defaults = array(
-			'status' => apply_filters( 'wcvendors_completed_statuses', array( 'completed', 'processing' ) ),
+			'status' => apply_filters( 'topgroupshops_completed_statuses', array( 'completed', 'processing' ) ),
 			'dates'  => array( 'before' => $dates[ 'before' ], 'after' => $dates[ 'after' ] ),
 		);
 
@@ -141,10 +141,10 @@ class WCV_Queries
 	{
 		global $wpdb;
 
-		$dates = WCV_Queries::orders_within_range();
+		$dates = TGS_Queries::orders_within_range();
 
 		$defaults = array(
-			'status' => apply_filters( 'wcvendors_completed_statuses', array( 'completed', 'processing' ) ),
+			'status' => apply_filters( 'topgroupshops_completed_statuses', array( 'completed', 'processing' ) ),
 			'dates'  => array( 'before' => $dates[ 'before' ], 'after' => $dates[ 'after' ] ),
 		);
 
@@ -208,10 +208,10 @@ class WCV_Queries
 	{
 		global $wpdb;
 
-		$dates = ( $date_range ) ? WCV_Queries::orders_within_range() : array();
+		$dates = ( $date_range ) ? TGS_Queries::orders_within_range() : array();
 
 		$defaults = array(
-			'status' => apply_filters( 'wcvendors_completed_statuses', array( 'completed', 'processing' ) ),
+			'status' => apply_filters( 'topgroupshops_completed_statuses', array( 'completed', 'processing' ) ),
 		);
 
 		$args = wp_parse_args( $args, $defaults );
@@ -277,7 +277,7 @@ class WCV_Queries
 		$after  = date( 'Y-m-d', $start_date );
 		$before = date( 'Y-m-d', strtotime( '+1 day', $end_date ) );
 		
-		return apply_filters( 'wcvendors_orders_date_range', array( 'after' => $after, 'before' => $before ) );
+		return apply_filters( 'topgroupshops_orders_date_range', array( 'after' => $after, 'before' => $before ) );
 	}
 
 

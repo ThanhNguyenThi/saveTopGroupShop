@@ -3,12 +3,12 @@
 /**
  * WP-Admin users page
  *
- * @author  Matt Gates <http://mgates.me>
- * @package WC_Vendors
+ * @author  Thanh Nguyen <http://topgroupshops.com.vn>
+ * @package TGS_Vendors
  */
 
 
-class WCV_Admin_Users
+class TGS_Admin_Users
 {
 
 
@@ -25,7 +25,7 @@ class WCV_Admin_Users
 		add_filter( 'add_menu_classes', array( $this, 'show_pending_number' ) );			
 
 		// Disabling non-vendor related items on the admin screens
-		if ( WCV_Vendors::is_vendor( get_current_user_id() ) ) {
+		if ( TGS_Function_Vendors::is_vendor( get_current_user_id() ) ) {
 			add_filter( 'woocommerce_csv_product_role', array( $this, 'csv_import_suite_compatibility' ) );
 			add_filter( 'woocommerce_csv_product_export_args', array( $this, 'csv_import_suite_compatibility_export' ) );
 
@@ -53,7 +53,7 @@ class WCV_Admin_Users
 			add_filter( 'woocommerce_duplicate_product_capability', array( $this, 'add_duplicate_capability' ) );
 
 			// WC > Product featured
-			$product_misc  = (array) WC_Vendors::$pv_options->get_option( 'hide_product_misc' );
+			$product_misc  = (array) TGS_Vendors::$pv_options->get_option( 'hide_product_misc' );
 			
 			if ( isset( $product_misc['featured'] ) ) { 
 				add_filter( 'manage_product_posts_columns', array($this, 'manage_product_columns'), 99);
@@ -72,7 +72,7 @@ class WCV_Admin_Users
 			return;
 		}
 
-		$can_submit = WC_Vendors::$pv_options->get_option( 'can_submit_products' );
+		$can_submit = TGS_Vendors::$pv_options->get_option( 'can_submit_products' );
 		if ( !$can_submit ) {
 			wp_die( 'You are not allowed to submit products.' );
 		}
@@ -84,7 +84,7 @@ class WCV_Admin_Users
 	// 		return $terms;
 	// 	}
 
-	// 	$products = WCV_Vendors::get_vendor_products( get_current_user_id() );
+	// 	$products = TGS_Function_Vendors::get_vendor_products( get_current_user_id() );
 	// 	$ids = array();
 	// 	foreach ( $products as $product ) {
 	// 		$ids[ ] = ( $product->ID );
@@ -136,7 +136,7 @@ class WCV_Admin_Users
 			'post_status'		=> 'pending'
 		); 	
 
-		if (!WCV_Vendors::is_vendor( get_current_user_id() ) ) unset( $args['author'] );
+		if (!TGS_Function_Vendors::is_vendor( get_current_user_id() ) ) unset( $args['author'] );
 
 		$pending_posts = get_posts( $args ); 
 		
@@ -167,9 +167,9 @@ class WCV_Admin_Users
 	function filter_product_types( $types )
 	{
 
-		$product_types = (array) WC_Vendors::$pv_options->get_option( 'hide_product_types' );
-		$product_misc  = (array) WC_Vendors::$pv_options->get_option( 'hide_product_misc' );
-		$css           = WC_Vendors::$pv_options->get_option( 'product_page_css' );
+		$product_types = (array) TGS_Vendors::$pv_options->get_option( 'hide_product_types' );
+		$product_misc  = (array) TGS_Vendors::$pv_options->get_option( 'hide_product_misc' );
+		$css           = TGS_Vendors::$pv_options->get_option( 'product_page_css' );
 
 
 		if ( !empty( $product_misc[ 'taxes' ] ) ) {
@@ -201,7 +201,7 @@ class WCV_Admin_Users
 	 */
 	function filter_product_data_tabs( $tabs ){ 
 
-		$product_panel = (array) WC_Vendors::$pv_options->get_option( 'hide_product_panel' );
+		$product_panel = (array) TGS_Vendors::$pv_options->get_option( 'hide_product_panel' );
 
 		if ( !$product_panel ) return $tabs; 
 
@@ -226,7 +226,7 @@ class WCV_Admin_Users
 	 */
 	function filter_product_type_options( $types )
 	{
-		$product_options = WC_Vendors::$pv_options->get_option( 'hide_product_type_options' );
+		$product_options = TGS_Vendors::$pv_options->get_option( 'hide_product_type_options' );
 
 		if ( !$product_options ) return $types;
 
@@ -372,7 +372,7 @@ class WCV_Admin_Users
 	{
 		if ( !current_user_can( 'edit_user', $vendor_id ) ) return false;
 
-		if ( ! WCV_Vendors::is_pending( $vendor_id ) && ! WCV_Vendors::is_vendor(  $vendor_id ) ) { return; }
+		if ( ! TGS_Function_Vendors::is_pending( $vendor_id ) && ! TGS_Function_Vendors::is_vendor(  $vendor_id ) ) { return; }
 
 		$users = get_users( array( 'meta_key' => 'pv_shop_slug', 'meta_value' => sanitize_title( $_POST[ 'pv_shop_name' ] ) ) );
 		if ( empty( $users ) || $users[ 0 ]->ID == $vendor_id ) {
@@ -385,10 +385,10 @@ class WCV_Admin_Users
 		update_user_meta( $vendor_id, 'pv_custom_commission_rate', $_POST[ 'pv_custom_commission_rate' ] );
 		update_user_meta( $vendor_id, 'pv_shop_description', $_POST[ 'pv_shop_description' ] );
 		update_user_meta( $vendor_id, 'pv_seller_info', $_POST[ 'pv_seller_info' ] );
-		update_user_meta( $vendor_id, 'wcv_give_vendor_tax', isset( $_POST[ 'wcv_give_vendor_tax' ] ) ); 
-		update_user_meta( $vendor_id, 'wcv_give_vendor_shipping', isset( $_POST[ 'wcv_give_vendor_shipping' ] ) ); 
+		update_user_meta( $vendor_id, 'tgs_give_vendor_tax', isset( $_POST[ 'tgs_give_vendor_tax' ] ) ); 
+		update_user_meta( $vendor_id, 'tgs_give_vendor_shipping', isset( $_POST[ 'tgs_give_vendor_shipping' ] ) ); 
 
-		do_action( 'wcvendors_update_admin_user', $vendor_id );
+		do_action( 'topgroupshops_update_admin_user', $vendor_id );
 	}
 
 
@@ -400,81 +400,81 @@ class WCV_Admin_Users
 	public function show_extra_profile_fields( $user )
 	{
 
-		if ( ! WCV_Vendors::is_vendor( $user->ID ) && ! WCV_Vendors::is_pending( $user->ID ) ) { 
+		if ( ! TGS_Function_Vendors::is_vendor( $user->ID ) && ! TGS_Function_Vendors::is_pending( $user->ID ) ) { 
 			return; 
 		} 
 
 		?>
-		<h3><?php _e( 'WC Vendors', 'wcvendors' ); ?></h3>
+		<h3><?php _e( 'Top Group Shops', 'topgroupshops' ); ?></h3>
 		<table class="form-table">
 			<tbody>
-			<?php do_action( 'wcvendors_admin_before_shop_html', $user ); ?>
+			<?php do_action( 'topgroupshops_admin_before_shop_html', $user ); ?>
 			<tr>
 				<th scope="row">Shop HTML</th>
 				<td>
 					<label for="pv_shop_html_enabled">
 						<input name="pv_shop_html_enabled" type="checkbox"
 							   id="pv_shop_html_enabled" <?php checked( true, get_user_meta( $user->ID, 'pv_shop_html_enabled', true ), $echo = true ) ?>/>
-						<?php _e( 'Enable HTML for the shop description', 'wcvendors' ); ?>
+						<?php _e( 'Enable HTML for the shop description', 'topgroupshops' ); ?>
 					</label>
 				</td>
 			</tr>
-			<?php do_action( 'wcvendors_admin_after_shop_html', $user ); ?>
+			<?php do_action( 'topgroupshops_admin_after_shop_html', $user ); ?>
 			<tr>
-				<th><label for="pv_shop_name"><?php _e( 'Shop name', 'wcvendors' ); ?></label></th>
+				<th><label for="pv_shop_name"><?php _e( 'Shop name', 'topgroupshops' ); ?></label></th>
 				<td><input type="text" name="pv_shop_name" id="pv_shop_name"
 						   value="<?php echo get_user_meta( $user->ID, 'pv_shop_name', true ); ?>" class="regular-text">
 				</td>
 			</tr>
-			<?php do_action( 'wcvendors_admin_after_shop_name', $user ); ?>
+			<?php do_action( 'topgroupshops_admin_after_shop_name', $user ); ?>
 			<tr>
-				<th><label for="pv_paypal"><?php _e( 'PayPal E-mail', 'wcvendors' ); ?> <span
-							class="description">(<?php _e( 'required', 'wcvendors' ); ?>)</span></label></th>
+				<th><label for="pv_paypal"><?php _e( 'PayPal E-mail', 'topgroupshops' ); ?> <span
+							class="description">(<?php _e( 'required', 'topgroupshops' ); ?>)</span></label></th>
 				<td><input type="email" name="pv_paypal" id="pv_paypal"
 						   value="<?php echo get_user_meta( $user->ID, 'pv_paypal', true ); ?>" class="regular-text">
 				</td>
 			</tr>
-			<?php do_action( 'wcvendors_admin_after_paypal', $user ); ?>
+			<?php do_action( 'topgroupshops_admin_after_paypal', $user ); ?>
 			<tr>
-				<th><label for="pv_custom_commission_rate"><?php _e( 'Commission rate', 'wcvendors' ); ?> (%)</label></th>
-				<td><input type="number" step="0.01" max="100" min="0" name="pv_custom_commission_rate" placeholder="<?php _e( 'Leave blank for default', 'wcvendors' ); ?>" id="pv_custom_commission_rate"
+				<th><label for="pv_custom_commission_rate"><?php _e( 'Commission rate', 'topgroupshops' ); ?> (%)</label></th>
+				<td><input type="number" step="0.01" max="100" min="0" name="pv_custom_commission_rate" placeholder="<?php _e( 'Leave blank for default', 'topgroupshops' ); ?>" id="pv_custom_commission_rate"
 						   value="<?php echo get_user_meta( $user->ID, 'pv_custom_commission_rate', true ); ?>" class="regular-text">
 				</td>
 			</tr>
-			<?php do_action( 'wcvendors_admin_after_commission_due', $user ); ?>
+			<?php do_action( 'topgroupshops_admin_after_commission_due', $user ); ?>
 			<tr>
-				<th><label for="wcv_give_vendor_tax"><?php _e( 'Give Tax', 'wcvendors' ); ?> (%)</label></th>
+				<th><label for="tgs_give_vendor_tax"><?php _e( 'Give Tax', 'topgroupshops' ); ?> (%)</label></th>
 				<td>
-					<label for="wcv_give_vendor_tax">
-						<input name="wcv_give_vendor_tax" type="checkbox"
-							   id="wcv_give_vendor_tax" <?php checked( true, get_user_meta( $user->ID, 'wcv_give_vendor_tax', true ), $echo = true ) ?>/>
-						<?php _e( 'Tax override for vendor', 'wcvendors' ); ?>
+					<label for="tgs_give_vendor_tax">
+						<input name="tgs_give_vendor_tax" type="checkbox"
+							   id="tgs_give_vendor_tax" <?php checked( true, get_user_meta( $user->ID, 'tgs_give_vendor_tax', true ), $echo = true ) ?>/>
+						<?php _e( 'Tax override for vendor', 'topgroupshops' ); ?>
 					</label>
 				</td>
 			</tr>
-			<?php do_action( 'wcvendors_admin_after_give_tax', $user ); ?>
+			<?php do_action( 'topgroupshops_admin_after_give_tax', $user ); ?>
 			<tr>
-				<th><label for="wcv_give_vendor_shipping"><?php _e( 'Give Shipping', 'wcvendors' ); ?> (%)</label></th>
+				<th><label for="tgs_give_vendor_shipping"><?php _e( 'Give Shipping', 'topgroupshops' ); ?> (%)</label></th>
 				<td>
-					<label for="wcv_give_vendor_shipping">
-						<input name="wcv_give_vendor_shipping" type="checkbox"
-							   id="wcv_give_vendor_shipping" <?php checked( true, get_user_meta( $user->ID, 'wcv_give_vendor_shipping', true ), $echo = true ) ?>/>
-						<?php _e( 'Shipping override for vendor', 'wcvendors' ); ?>
+					<label for="tgs_give_vendor_shipping">
+						<input name="tgs_give_vendor_shipping" type="checkbox"
+							   id="tgs_give_vendor_shipping" <?php checked( true, get_user_meta( $user->ID, 'tgs_give_vendor_shipping', true ), $echo = true ) ?>/>
+						<?php _e( 'Shipping override for vendor', 'topgroupshops' ); ?>
 					</label>
 				</td>
 			</tr>
-			<?php do_action( 'wcvendors_admin_after_give_shipping', $user ); ?>
+			<?php do_action( 'topgroupshops_admin_after_give_shipping', $user ); ?>
 			<tr>
-				<th><label for="pv_seller_info"><?php _e( 'Seller info', 'wcvendors' ); ?></label></th>
+				<th><label for="pv_seller_info"><?php _e( 'Seller info', 'topgroupshops' ); ?></label></th>
 				<td><?php wp_editor( get_user_meta( $user->ID, 'pv_seller_info', true ), 'pv_seller_info' ); ?></td>
 			</tr>
-			<?php do_action( 'wcvendors_admin_after_seller_info', $user ); ?>
+			<?php do_action( 'topgroupshops_admin_after_seller_info', $user ); ?>
 			<tr>
-				<th><label for="pv_shop_description"><?php _e( 'Shop description', 'wcvendors' ); ?></label>
+				<th><label for="pv_shop_description"><?php _e( 'Shop description', 'topgroupshops' ); ?></label>
 				</th>
 				<td><?php wp_editor( get_user_meta( $user->ID, 'pv_shop_description', true ), 'pv_shop_description' ); ?></td>
 			</tr>
-			<?php do_action( 'wcvendors_admin_after_shop_description', $user ); ?>
+			<?php do_action( 'topgroupshops_admin_after_shop_description', $user ); ?>
 			</tbody>
 		</table>
 	<?php

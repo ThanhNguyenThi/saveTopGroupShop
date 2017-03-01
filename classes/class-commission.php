@@ -3,12 +3,12 @@
 /**
  * Commission functions
  *
- * @author  Matt Gates <http://mgates.me>
+ * @author  Thanh Nguyen <http://topgroupshops.com.vn>
  * @package ProductVendor
  */
 
 
-class WCV_Commission
+class TGS_Commission
 {
 
 
@@ -17,12 +17,12 @@ class WCV_Commission
 	 */
 	function __construct()
 	{
-		$this->completed_statuses = apply_filters( 'wcvendors_completed_statuses', array(
+		$this->completed_statuses = apply_filters( 'topgroupshops_completed_statuses', array(
 																								'completed',
 																								'processing',
 																						   ) );
 
-		$this->reverse_statuses = apply_filters( 'wcvendors_reversed_statuses', array(
+		$this->reverse_statuses = apply_filters( 'topgroupshops_reversed_statuses', array(
 																							 'pending',
 																							 'refunded',
 																							 'cancelled',
@@ -44,7 +44,7 @@ class WCV_Commission
 	{
 		foreach ( $this->completed_statuses as $completed ) {
 			foreach ( $this->reverse_statuses as $reversed ) {
-				add_action( "woocommerce_order_status_{$completed}_to_{$reversed}", array( 'WCV_Commission', 'reverse_due_commission' ) );
+				add_action( "woocommerce_order_status_{$completed}_to_{$reversed}", array( 'TGS_Commission', 'reverse_due_commission' ) );
 			}
 		}
 	}
@@ -56,16 +56,16 @@ class WCV_Commission
 	public function check_order_complete()
 	{
 		foreach ( $this->completed_statuses as $completed ) {
-			add_action( 'woocommerce_order_status_' . $completed, array( 'WCV_Commission', 'log_commission_due' ) );
+			add_action( 'woocommerce_order_status_' . $completed, array( 'TGS_Commission', 'log_commission_due' ) );
 		}
 	}
 
 	public static function commission_status(){ 
 
-		return apply_filters( 'wcvendors_commission_status', array(
-				'due' 		=> __( 'Due', 'wcvendors' ), 
-				'paid'		=> __( 'Paid', 'wcvendors' ), 
-				'reversed'	=> __( 'Reversed', 'wcvendors' )
+		return apply_filters( 'topgroupshops_commission_status', array(
+				'due' 		=> __( 'Due', 'topgroupshops' ), 
+				'paid'		=> __( 'Paid', 'topgroupshops' ), 
+				'reversed'	=> __( 'Reversed', 'topgroupshops' )
 			)
 		); 
 
@@ -86,11 +86,11 @@ class WCV_Commission
 		global $wpdb;
 
 		// Check if this order exists
-		$count = WCV_Commission::count_commission_by_order( $order_id );
+		$count = TGS_Commission::count_commission_by_order( $order_id );
 		if ( !$count ) return false;
 
 		// Deduct this amount from the vendor's total due
-		$results = WCV_Commission::sum_total_due_for_order( $order_id );
+		$results = TGS_Commission::sum_total_due_for_order( $order_id );
 		$ids        = implode( ',', $results[ 'ids' ] );
 		$table_name = $wpdb->prefix . "pv_commission";
 
@@ -113,15 +113,15 @@ class WCV_Commission
 		global $woocommerce;
 
 		$order = new WC_Order( $order_id );
-		$dues  = WCV_Vendors::get_vendor_dues_from_order( $order, false );
+		$dues  = TGS_Function_Vendors::get_vendor_dues_from_order( $order, false );
 
 		foreach ( $dues as $vendor_id => $details ) {
 
 			// Only process vendor commission
-			if ( !WCV_Vendors::is_vendor( $vendor_id ) ) continue;
+			if ( !TGS_Function_Vendors::is_vendor( $vendor_id ) ) continue;
 
 			// See if they currently have an amount due
-			$due = WCV_Vendors::count_due_by_vendor( $vendor_id, $order_id );
+			$due = TGS_Function_Vendors::count_due_by_vendor( $vendor_id, $order_id );
 			if ( $due > 0 ) continue;
 
 			// Get the dues in an easy format for inserting to our table
@@ -143,7 +143,7 @@ class WCV_Commission
 			}
 
 			if ( !empty( $insert_due ) ) {
-				WCV_Commission::insert_new_commission( array_values( $insert_due ) );
+				TGS_Commission::insert_new_commission( array_values( $insert_due ) );
 			}
 		}
 
@@ -197,9 +197,9 @@ class WCV_Commission
 
 		$table_name = $wpdb->prefix . "pv_commission";
 		$where      = $wpdb->prepare( 'WHERE status = %s', 'due' );
-		$where 		= apply_filters( 'wcvendors_commission_all_due_where', $where ); 
+		$where 		= apply_filters( 'topgroupshops_commission_all_due_where', $where ); 
 		$query      = "SELECT id, vendor_id, total_due FROM `{$table_name}` $where";  
-		$query 		= apply_filters( 'wcvendors_commission_all_due_sql', $wpdb->prepare( $query ) ); 
+		$query 		= apply_filters( 'topgroupshops_commission_all_due_sql', $wpdb->prepare( $query ) ); 
 		$results    = $wpdb->get_results(  $query );
 
 		return $results;
@@ -278,11 +278,11 @@ class WCV_Commission
 		$parent = get_post_ancestors( $product_id );
 		if ( $parent ) $product_id = $parent[ 0 ];
 
-		$vendor_id = WCV_Vendors::get_vendor_from_product( $product_id );
+		$vendor_id = TGS_Function_Vendors::get_vendor_from_product( $product_id );
 
 		$product_commission = get_post_meta( $product_id, 'pv_commission_rate', true );
-		$vendor_commission  = WCV_Vendors::get_default_commission( $vendor_id );
-		$default_commission = WC_Vendors::$pv_options->get_option( 'default_commission' );
+		$vendor_commission  = TGS_Function_Vendors::get_default_commission( $vendor_id );
+		$default_commission = TGS_Vendors::$pv_options->get_option( 'default_commission' );
 
 		if ( $product_commission != '' && $product_commission !== false ) {
 			$commission = $product_commission;
@@ -296,7 +296,7 @@ class WCV_Commission
 			$commission = $default_commission;
 		}
 
-		return apply_filters( 'wcv_commission_rate_percent', $commission, $product_id );
+		return apply_filters( 'tgs_commission_rate_percent', $commission, $product_id );
 	}
 
 
@@ -310,11 +310,11 @@ class WCV_Commission
 	 */
 	public static function calculate_commission( $product_price, $product_id, $order, $qty )
 	{
-		$commission_rate = WCV_Commission::get_commission_rate( $product_id );
+		$commission_rate = TGS_Commission::get_commission_rate( $product_id );
 		$commission      = $product_price * ( $commission_rate / 100 );
 		$commission      = round( $commission, 2 );
 
-		return apply_filters( 'wcv_commission_rate', $commission, $product_id, $product_price, $order, $qty );
+		return apply_filters( 'tgs_commission_rate', $commission, $product_id, $product_price, $order, $qty );
 	}
 
 
@@ -349,7 +349,7 @@ class WCV_Commission
 				'qty'        => $order[ 'qty' ],
 			);
 			// Is the commission already paid? 
-			$count = WCV_Commission::check_commission_status( $order, 'paid' ); 
+			$count = TGS_Commission::check_commission_status( $order, 'paid' ); 
 
 			if ( $count == 0 ) { 
 				$update = $wpdb->update( $table, $order, $where );
@@ -358,7 +358,7 @@ class WCV_Commission
 
 		}
 
-		do_action( 'wcv_commissions_inserted', $orders );
+		do_action( 'tgs_commissions_inserted', $orders );
 	}
 
 
@@ -453,7 +453,7 @@ class WCV_Commission
 	    global $wpdb;
 
 		// Check if this order exists in the commissions table 
-		$count = WCV_Commission::count_commission_by_order( $order_id );
+		$count = TGS_Commission::count_commission_by_order( $order_id );
 		if ( !$count ) return false;
 
 		$table_name = $wpdb->prefix . "pv_commission";

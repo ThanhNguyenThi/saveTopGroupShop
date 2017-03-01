@@ -5,12 +5,12 @@ if ( !defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 /**
  *
  *
- * @author Matt Gates <http://mgates.me>
+ * @author Thanh Nguyen
  * @package
  */
 
 
-class WCV_Emails
+class TGS_Emails
 {
 
 
@@ -21,7 +21,7 @@ class WCV_Emails
 	{
 		add_filter( 'woocommerce_email_classes', array( $this, 'check_items' ) );
 		add_filter( 'woocommerce_resend_order_emails_available', array( $this, 'order_action' ) );
-		add_filter( 'woocommerce_order_product_title', array( 'WCV_Emails', 'show_vendor_in_email' ), 10, 2 );
+		add_filter( 'woocommerce_order_product_title', array( 'TGS_Emails', 'show_vendor_in_email' ), 10, 2 );
 		add_action( 'set_user_role', array( $this, 'application_status_email' ), 10, 2 );
 		add_action( 'transition_post_status', array( $this, 'trigger_new_product' ), 10, 3 );
 
@@ -34,7 +34,7 @@ class WCV_Emails
 	{
 		global $woocommerce;
 
-		if ( $from != $to && $post->post_status == 'pending' && WCV_Vendors::is_vendor( $post->post_author ) && $post->post_type == 'product' ) {
+		if ( $from != $to && $post->post_status == 'pending' && TGS_Function_Vendors::is_vendor( $post->post_author ) && $post->post_type == 'product' ) {
 			$mails = $woocommerce->mailer()->get_emails();
 			if ( !empty( $mails ) ) {
 				$mails[ 'WC_Email_Notify_Admin' ]->trigger( $post->post_id, $post );
@@ -56,11 +56,11 @@ class WCV_Emails
 		if ( !empty( $_POST[ 'apply_for_vendor' ] ) || ( !empty( $_GET[ 'action' ] ) && ( $_GET[ 'action' ] == 'approve_vendor' || $_GET[ 'action' ] == 'deny_vendor' ) ) ) {
 
 			if ( $role == 'pending_vendor' ) {
-				$status = __( 'pending', 'wcvendors' );
+				$status = __( 'pending', 'topgroupshops' );
 			} else if ( $role == 'vendor' ) {
-				$status = __( 'approved', 'wcvendors' );
+				$status = __( 'approved', 'topgroupshops' );
 			} else if ( !empty( $_GET[ 'action' ] ) && $_GET[ 'action' ] == 'deny_vendor' ) {
-				$status = __( 'denied', 'wcvendors' );
+				$status = __( 'denied', 'topgroupshops' );
 			}
 
 			$mails = $woocommerce->mailer()->get_emails();
@@ -83,12 +83,12 @@ class WCV_Emails
 	function show_vendor_in_email( $name, $_product )
 	{
 		$product = get_post( $_product->id );		
-		$sold_by_label = WC_Vendors::$pv_options->get_option( 'sold_by_label' ); 
-		$sold_by = WCV_Vendors::is_vendor( $product->post_author )
-			? sprintf( '<a href="%s">%s</a>', WCV_Vendors::get_vendor_shop_page( $product->post_author ), WCV_Vendors::get_vendor_sold_by( $product->post_author ) )
+		$sold_by_label = TGS_Vendors::$pv_options->get_option( 'sold_by_label' ); 
+		$sold_by = TGS_Function_Vendors::is_vendor( $product->post_author )
+			? sprintf( '<a href="%s">%s</a>', TGS_Function_Vendors::get_vendor_shop_page( $product->post_author ), TGS_Function_Vendors::get_vendor_sold_by( $product->post_author ) )
 			: get_bloginfo( 'name' );
 
-		$name .= '<small class="wcvendors_sold_by_in_email"><br />' . apply_filters('wcvendors_sold_by_in_email', $sold_by_label, $_product->id, $product->post_author ). $sold_by . '</small><br />';
+		$name .= '<small class="topgroupshops_sold_by_in_email"><br />' . apply_filters('topgroupshops_sold_by_in_email', $sold_by_label, $_product->id, $product->post_author ). $sold_by . '</small><br />';
 
 		return $name;
 	}
@@ -118,10 +118,10 @@ class WCV_Emails
 	 */
 	public function check_items( $emails )
 	{
-		require_once wcv_plugin_dir . 'classes/admin/emails/class-wc-notify-admin.php';
-		require_once wcv_plugin_dir . 'classes/admin/emails/class-wc-notify-vendor.php';
-		require_once wcv_plugin_dir . 'classes/admin/emails/class-wc-approve-vendor.php';
-		require_once wcv_plugin_dir . 'classes/admin/emails/class-wc-notify-shipped.php';
+		require_once tgs_plugin_dir . 'classes/admin/emails/class-wc-notify-admin.php';
+		require_once tgs_plugin_dir . 'classes/admin/emails/class-wc-notify-vendor.php';
+		require_once tgs_plugin_dir . 'classes/admin/emails/class-wc-approve-vendor.php';
+		require_once tgs_plugin_dir . 'classes/admin/emails/class-wc-notify-shipped.php';
 
 		$emails[ 'WC_Email_Notify_Vendor' ]  = new WC_Email_Notify_Vendor();
 		$emails[ 'WC_Email_Approve_Vendor' ] = new WC_Email_Approve_Vendor();
@@ -137,7 +137,7 @@ class WCV_Emails
 	 */
 	public function vendor_stock_email( $emails, $product ) { 
 
-		if ( WCV_Vendors::is_vendor( $product->post->post_author ) ) { 
+		if ( TGS_Function_Vendors::is_vendor( $product->post->post_author ) ) { 
 			$vendor_data = get_userdata( $product->post->post_author ); 
 			$vendor_email = $vendor_data->user_email; 
 			$emails .= ','.$vendor_email;  

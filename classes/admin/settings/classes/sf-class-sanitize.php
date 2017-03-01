@@ -3,7 +3,7 @@
 /**
  * Sanitize filters
  *
- * @author  Matt Gates <http://mgates.me>
+ * @author  Thanh Nguyen
  * @package WordPress
  */
 

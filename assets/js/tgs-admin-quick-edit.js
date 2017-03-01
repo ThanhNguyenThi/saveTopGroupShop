@@ -15,10 +15,10 @@ jQuery(function(){
 
         post_id = post_id.replace("post-", "");
 
-        var wcv_inline_data = jQuery('#vendor_' + post_id),
+        var tgs_inline_data = jQuery('#vendor_' + post_id),
             wc_inline_data = jQuery('#woocommerce_inline_' + post_id );
 
-        var vendor = wcv_inline_data.find("#_vendor").text();
+        var vendor = tgs_inline_data.find("#_vendor").text();
 
         jQuery('select[name="post_author"] option[value="' + vendor + '"]', '.inline-edit-row').attr('selected', 'selected');
 

@@ -4,7 +4,7 @@
  * Format an options array into HTML
  * This class has been deprecated
  *
- * @author  Matt Gates <http://mgates.me>
+ * @author  Thanh Nguyen
  * @package WordPress
  */
 
@@ -208,7 +208,7 @@ if ( !class_exists( 'SF_Format_Options' ) ) {
 
 				if ( $select2 ) : ?>
 					<script type="text/javascript">jQuery(function () {
-							jQuery("#<?php echo $id; ?>").select2({ allowClear: true, placeholder: "<?php _e( 'Select a page...', 'wcvendors' ); ?>", width: '350px' });
+							jQuery("#<?php echo $id; ?>").select2({ allowClear: true, placeholder: "<?php _e( 'Select a page...', 'topgroupshops' ); ?>", width: '350px' });
 						});</script>
 				<?php endif;
 

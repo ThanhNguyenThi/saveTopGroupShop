@@ -3,7 +3,7 @@
 /**
  *
  */
-class WCV_Vendor_Applicants
+class TGS_Vendor_Applicants
 {
 
 	function __construct()
@@ -44,13 +44,13 @@ class WCV_Vendor_Applicants
 				case 'approve_vendor':
 					$role = 'vendor';
 					add_action( 'admin_notices', array( $this, 'approved' ) );
-					do_action( 'wcvendors_approve_vendor', $wp_user_object ); 
+					do_action( 'topgroupshops_approve_vendor', $wp_user_object ); 
 					break;
 
 				case 'deny_vendor':
 					$role = 'subscriber';
 					add_action( 'admin_notices', array( $this, 'denied' ) );
-					do_action( 'wcvendors_deny_vendor', $wp_user_object ); 
+					do_action( 'topgroupshops_deny_vendor', $wp_user_object ); 
 					break;
 
 				default:
@@ -70,7 +70,7 @@ class WCV_Vendor_Applicants
 	public function denied()
 	{
 		echo '<div class="updated">';
-		echo '<p>' . __( 'Vendor has been <b>denied</b>.', 'wcvendors' ) . '</p>';
+		echo '<p>' . __( 'Vendor has been <b>denied</b>.', 'topgroupshops' ) . '</p>';
 		echo '</div>';
 	}
 
@@ -81,7 +81,7 @@ class WCV_Vendor_Applicants
 	public function approved()
 	{
 		echo '<div class="updated">';
-		echo '<p>' . __( 'Vendor has been <b>approved</b>.', 'wcvendors' ) . '</p>';
+		echo '<p>' . __( 'Vendor has been <b>approved</b>.', 'topgroupshops' ) . '</p>';
 		echo '</div>';
 	}
 
@@ -95,7 +95,7 @@ class WCV_Vendor_Applicants
 	 */
 	public function show_pending_vendors_link( $values )
 	{
-		$values[ 'pending_vendors' ] = '<a href="?role=asd">' . __( 'Pending Vendors', 'wcvendors' ) . ' <span class="count">(3)</span></a>';
+		$values[ 'pending_vendors' ] = '<a href="?role=asd">' . __( 'Pending Vendors', 'topgroupshops' ) . ' <span class="count">(3)</span></a>';
 
 		return $values;
 	}

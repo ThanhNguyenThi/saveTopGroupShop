@@ -4,7 +4,7 @@
  *
  * Registers post types and taxonomies
  *
- * @class       WCV_Post_types
+ * @class       TGS_Post_types
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -12,9 +12,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * WCV_Post_types Class
+ * TGS_Post_types Class
  */
-class WCV_Post_types {
+class TGS_Post_types {
 
 	/**
 	 * Hook in methods.
@@ -49,4 +49,4 @@ class WCV_Post_types {
 	}
 }
 
-WCV_Post_types::init();
+TGS_Post_types::init();

@@ -25,11 +25,11 @@ class WC_Email_Notify_Shipped extends WC_Email
 	function __construct()
 	{
 		$this->id          = 'vendor_notify_shipped';
-		$this->title       = __( 'Vendor has shipped', 'wcvendors' );
-		$this->description = __( 'An email is sent when a vendor has marked one of their orders as shipped.', 'wcvendors' );
+		$this->title       = __( 'Vendor has shipped', 'topgroupshops' );
+		$this->description = __( 'An email is sent when a vendor has marked one of their orders as shipped.', 'topgroupshops' );
 
-		$this->heading = __( 'Your order has been shipped', 'wcvendors' );
-		$this->subject = __( '[{blogname}] Your order has been shipped ({order_number}) - {order_date}', 'wcvendors' );
+		$this->heading = __( 'Your order has been shipped', 'topgroupshops' );
+		$this->subject = __( '[{blogname}] Your order has been shipped ({order_number}) - {order_date}', 'topgroupshops' );
 
 		$this->template_html  = 'notify-vendor-shipped.php';
 		$this->template_plain = 'notify-vendor-shipped.php';
@@ -86,7 +86,7 @@ class WC_Email_Notify_Shipped extends WC_Email
 				continue;
 			}
 
-			$author = WCV_Vendors::get_vendor_from_product( $product[ 'product_id' ] );
+			$author = TGS_Function_Vendors::get_vendor_from_product( $product[ 'product_id' ] );
 
 			if ( $this->current_vendor != $author ) {
 				unset( $items[ $key ] );
@@ -109,7 +109,7 @@ class WC_Email_Notify_Shipped extends WC_Email
 	public function check_order_totals( $total_rows, $order )
 	{
 		$return[ 'cart_subtotal' ]            = $total_rows[ 'cart_subtotal' ];
-		$return[ 'cart_subtotal' ][ 'label' ] = __( 'Subtotal:', 'wcvendors' );
+		$return[ 'cart_subtotal' ][ 'label' ] = __( 'Subtotal:', 'topgroupshops' );
 
 		return $return;
 	}
@@ -160,35 +160,35 @@ class WC_Email_Notify_Shipped extends WC_Email
 	{
 		$this->form_fields = array(
 			'enabled'    => array(
-				'title'   => __( 'Enable/Disable', 'wcvendors' ),
+				'title'   => __( 'Enable/Disable', 'topgroupshops' ),
 				'type'    => 'checkbox',
-				'label'   => __( 'Enable this email notification', 'wcvendors' ),
+				'label'   => __( 'Enable this email notification', 'topgroupshops' ),
 				'default' => 'yes'
 			),
 			'subject'    => array(
-				'title'       => __( 'Subject', 'wcvendors' ),
+				'title'       => __( 'Subject', 'topgroupshops' ),
 				'type'        => 'text',
-				'description' => sprintf( __( 'This controls the email subject line. Leave blank to use the default subject: <code>%s</code>.', 'wcvendors' ), $this->subject ),
+				'description' => sprintf( __( 'This controls the email subject line. Leave blank to use the default subject: <code>%s</code>.', 'topgroupshops' ), $this->subject ),
 				'placeholder' => '',
 				'default'     => ''
 			),
 			'heading'    => array(
-				'title'       => __( 'Email Heading', 'wcvendors' ),
+				'title'       => __( 'Email Heading', 'topgroupshops' ),
 				'type'        => 'text',
-				'description' => sprintf( __( 'This controls the main heading contained within the email notification. Leave blank to use the default heading: <code>%s</code>.', 'wcvendors' ), $this->heading ),
+				'description' => sprintf( __( 'This controls the main heading contained within the email notification. Leave blank to use the default heading: <code>%s</code>.', 'topgroupshops' ), $this->heading ),
 				'placeholder' => '',
 				'default'     => ''
 			),
 			'email_type' => array(
-				'title'       => __( 'Email type', 'wcvendors' ),
+				'title'       => __( 'Email type', 'topgroupshops' ),
 				'type'        => 'select',
-				'description' => __( 'Choose which format of email to send.', 'wcvendors' ),
+				'description' => __( 'Choose which format of email to send.', 'topgroupshops' ),
 				'default'     => 'html',
 				'class'       => 'email_type',
 				'options'     => array(
-					'plain'     => __( 'Plain text', 'wcvendors' ),
-					'html'      => __( 'HTML', 'wcvendors' ),
-					'multipart' => __( 'Multipart', 'wcvendors' ),
+					'plain'     => __( 'Plain text', 'topgroupshops' ),
+					'html'      => __( 'HTML', 'topgroupshops' ),
+					'multipart' => __( 'Multipart', 'topgroupshops' ),
 				)
 			)
 		);

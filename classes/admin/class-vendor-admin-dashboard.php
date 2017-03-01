@@ -1,12 +1,12 @@
 <?php 
 /**
- *  WC Vendor Admin Dashboard - Vendor WP-Admin Dashboard Pages
+ *  Group Shops Admin Dashboard - Vendor WP-Admin Dashboard Pages
  * 
- * @author Jamie Madden <http://wcvendors.com / https://github.com/digitalchild>
- * @package WCVendors
+ * @author Thanh Nguyen <http://topgroupshops.com.vn>
+ * @package groupshops
  */
 
-Class WCV_Vendor_Admin_Dashboard { 
+Class TGS_Vendor_Admin_Dashboard { 
 
 	function __construct(){ 
 		// Add Shop Settings page 
@@ -17,9 +17,9 @@ Class WCV_Vendor_Admin_Dashboard {
 	}
 
 	function vendor_dashboard_pages(){
-        add_menu_page( __('Shop Settings', 'wcvendors'), __('Shop Settings', 'wcvendors'), 'manage_product', 'wcv-vendor-shopsettings', array( $this, 'settings_page' ) );
-		$hook = add_menu_page( __( 'Orders', 'wcvendors' ), __( 'Orders', 'wcvendors' ), 'manage_product', 'wcv-vendor-orders', array( 'WCV_Vendor_Admin_Dashboard', 'orders_page' ) );
-		add_action( "load-$hook", array( 'WCV_Vendor_Admin_Dashboard', 'add_options' ) );
+        add_menu_page( __('Shop Settings', 'topgroupshops'), __('Shop Settings', 'topgroupshops'), 'manage_product', 'tgs-vendor-shopsettings', array( $this, 'settings_page' ) );
+		$hook = add_menu_page( __( 'Orders', 'topgroupshops' ), __( 'Orders', 'topgroupshops' ), 'manage_product', 'tgs-vendor-orders', array( 'TGS_Vendor_Admin_Dashboard', 'orders_page' ) );
+		add_action( "load-$hook", array( 'TGS_Vendor_Admin_Dashboard', 'add_options' ) );
 	}
  
 	function settings_page() {  
@@ -29,8 +29,8 @@ Class WCV_Vendor_Admin_Dashboard {
 		$description = get_user_meta( $user_id, 'pv_shop_description', true );
 		$seller_info = get_user_meta( $user_id, 'pv_seller_info', true );
 		$has_html    = get_user_meta( $user_id, 'pv_shop_html_enabled', true );
-		$shop_page   = WCV_Vendors::get_vendor_shop_page( wp_get_current_user()->user_login );
-		$global_html = WC_Vendors::$pv_options->get_option( 'shop_html_enabled' );
+		$shop_page   = TGS_Function_Vendors::get_vendor_shop_page( wp_get_current_user()->user_login );
+		$global_html = TGS_Vendors::$pv_options->get_option( 'shop_html_enabled' );
 		include('views/html-vendor-settings-page.php'); 
 	}
 
@@ -39,10 +39,10 @@ Class WCV_Vendor_Admin_Dashboard {
 		$screen 	= get_current_screen(); 
 		$screen_id 	= $screen->id; 
 
-		if ( 'wcv-vendor-orders' === $screen_id ){ 
+		if ( 'tgs-vendor-orders' === $screen_id ){ 
 
 			add_thickbox();
-			wp_enqueue_style( 'admin_order_styles', wcv_assets_url . 'css/admin-orders.css' );
+			wp_enqueue_style( 'admin_order_styles', tgs_assets_url . 'css/admin-orders.css' );
 		}	
 	}
 
@@ -55,14 +55,14 @@ Class WCV_Vendor_Admin_Dashboard {
 		$error = false; 
 		$error_msg = '';
 
-		if (isset ( $_POST[ 'wc-vendors-nonce' ] ) ) { 
+		if (isset ( $_POST[ 'groupshops-nonce' ] ) ) { 
 
-			if ( !wp_verify_nonce( $_POST[ 'wc-vendors-nonce' ], 'save-shop-settings-admin' ) ) {
+			if ( !wp_verify_nonce( $_POST[ 'groupshops-nonce' ], 'save-shop-settings-admin' ) ) {
 				return false;
 			}
 
 			if ( !is_email( $_POST[ 'pv_paypal' ] ) ) {
-				$error_msg .=  __( 'Your PayPal address is not a valid email address.', 'wcvendors' );
+				$error_msg .=  __( 'Your PayPal address is not a valid email address.', 'topgroupshops' );
 				$error = true; 
 			} else {
 				update_user_meta( $user_id, 'pv_paypal', $_POST[ 'pv_paypal' ] );
@@ -71,7 +71,7 @@ Class WCV_Vendor_Admin_Dashboard {
 			if ( !empty( $_POST[ 'pv_shop_name' ] ) ) {
 				$users = get_users( array( 'meta_key' => 'pv_shop_slug', 'meta_value' => sanitize_title( $_POST[ 'pv_shop_name' ] ) ) );
 				if ( !empty( $users ) && $users[ 0 ]->ID != $user_id ) {
-					$error_msg .= __( 'That shop name is already taken. Your shop name must be unique.', 'wcvendors' ); 
+					$error_msg .= __( 'That shop name is already taken. Your shop name must be unique.', 'topgroupshops' ); 
 					$error = true; 
 				} else {
 					update_user_meta( $user_id, 'pv_shop_name', $_POST[ 'pv_shop_name' ] );
@@ -87,11 +87,11 @@ Class WCV_Vendor_Admin_Dashboard {
 				update_user_meta( $user_id, 'pv_seller_info', $_POST[ 'pv_seller_info' ] );
 			}
 
-			do_action( 'wcvendors_shop_settings_admin_saved', $user_id );
+			do_action( 'topgroupshops_shop_settings_admin_saved', $user_id );
 
 			if ( ! $error ) {
 				echo '<div class="updated"><p>';
-				echo __( 'Settings saved.', 'wcvendors' );
+				echo __( 'Settings saved.', 'topgroupshops' );
 				echo '</p></div>';
 			} else { 
 				echo '<div class="error"><p>';
@@ -123,7 +123,7 @@ Class WCV_Vendor_Admin_Dashboard {
 	 */
 	public static function add_options()
 	{
-		global $WCV_Vendor_Order_Page;
+		global $TGS_Vendor_Order_Page;
 
 		$args = array(
 			'label'   => 'Rows',
@@ -132,7 +132,7 @@ Class WCV_Vendor_Admin_Dashboard {
 		);
 		add_screen_option( 'per_page', $args );
 
-		$WCV_Vendor_Order_Page = new WCV_Vendor_Order_Page();
+		$TGS_Vendor_Order_Page = new TGS_Vendor_Order_Page();
 
 	}
 
@@ -142,20 +142,20 @@ Class WCV_Vendor_Admin_Dashboard {
 	 */
 	public static function orders_page()
 	{
-		global $woocommerce, $WCV_Vendor_Order_Page;
+		global $woocommerce, $TGS_Vendor_Order_Page;
 
-		$WCV_Vendor_Order_Page->prepare_items();
+		$TGS_Vendor_Order_Page->prepare_items();
 
 		?>
 		<div class="wrap">
 
 			<div id="icon-woocommerce" class="icon32 icon32-woocommerce-reports"><br/></div>
-			<h2><?php _e( 'Orders', 'wcvendors' ); ?></h2>
+			<h2><?php _e( 'Orders', 'topgroupshops' ); ?></h2>
 
 			<form id="posts-filter" method="get">
 
-				<input type="hidden" name="page" value="wcv-vendor-orders"/>
-				<?php $WCV_Vendor_Order_Page->display() ?>
+				<input type="hidden" name="page" value="tgs-vendor-orders"/>
+				<?php $TGS_Vendor_Order_Page->display() ?>
 
 			</form>
 			<div id="ajax-response"></div>
@@ -164,18 +164,18 @@ Class WCV_Vendor_Admin_Dashboard {
 
 <?php }
 
-} // End WCV_Vendor_Admin_Dashboard
+} // End TGS_Vendor_Admin_Dashboard
 
 if ( !class_exists( 'WP_List_Table' ) ) require_once ABSPATH . 'wp-admin/includes/class-wp-list-table.php';
 
 /**
- * WCV Vendor Order Page 
+ * TGS Vendor Order Page 
  * 
- * @author Jamie Madden <http://wcvendors.com / https://github.com/digitalchild>
- * @package WCVendors 
+ * @author Thanh Nguyen
+ * @package groupshops
  * @extends WP_List_Table
  */
-class WCV_Vendor_Order_Page extends WP_List_Table
+class TGS_Vendor_Order_Page extends WP_List_Table
 {
 
 	public $index;
@@ -213,13 +213,13 @@ class WCV_Vendor_Order_Page extends WP_List_Table
 
 		//Set parent defaults
 		parent::__construct( array(
-								  'singular' => __( 'order', 'wcvendors' ),
-								  'plural'   => __( 'orders', 'wcvendors' ), 
+								  'singular' => __( 'order', 'topgroupshops' ),
+								  'plural'   => __( 'orders', 'topgroupshops' ), 
 								  'ajax'     => false
 							 ) );
 
-		$this->can_view_comments = WC_Vendors::$pv_options->get_option( 'can_view_order_comments' );
-		$this->can_add_comments = WC_Vendors::$pv_options->get_option( 'can_submit_order_comments' );
+		$this->can_view_comments = TGS_Vendors::$pv_options->get_option( 'can_view_order_comments' );
+		$this->can_add_comments = TGS_Vendors::$pv_options->get_option( 'can_submit_order_comments' );
 	}
 
 
@@ -287,13 +287,13 @@ class WCV_Vendor_Order_Page extends WP_List_Table
 	{
 		$columns = array(
 			'cb'        => '<input type="checkbox" />',
-			'order_id'  => __( 'Order ID', 'wcvendors' ),
-			'customer'  => __( 'Customer', 'wcvendors' ),
-			'products'  => __( 'Products', 'wcvendors' ),
-			'total' 	=> __( 'Total', 'wcvendors' ),
-			// 'comments' 	=> __( 'Comments to Customer', 'wcvendors' ),
-			'date'      => __( 'Date', 'wcvendors' ),
-			'status'    => __( 'Shipped', 'wcvendors' ),
+			'order_id'  => __( 'Order ID', 'topgroupshops' ),
+			'customer'  => __( 'Customer', 'topgroupshops' ),
+			'products'  => __( 'Products', 'topgroupshops' ),
+			'total' 	=> __( 'Total', 'topgroupshops' ),
+			// 'comments' 	=> __( 'Comments to Customer', 'topgroupshops' ),
+			'date'      => __( 'Date', 'topgroupshops' ),
+			'status'    => __( 'Shipped', 'topgroupshops' ),
 		);
 
 		if ( !$this->can_view_comments ) unset( $columns['comments'] );
@@ -328,7 +328,7 @@ class WCV_Vendor_Order_Page extends WP_List_Table
 	function get_bulk_actions()
 	{
 		$actions = array(
-			'mark_shipped'     =>  apply_filters( 'wcvendors_mark_shipped_label', __( 'Mark shipped', 'wcvendors' ) ),
+			'mark_shipped'     =>  apply_filters( 'topgroupshops_mark_shipped_label', __( 'Mark shipped', 'topgroupshops' ) ),
 		);
 
 		return $actions;
@@ -353,7 +353,7 @@ class WCV_Vendor_Order_Page extends WP_List_Table
 					$result = $this->mark_shipped( $items );
 
 					if ( $result )
-						echo '<div class="updated"><p>' . __( 'Orders marked shipped.', 'wcvendors' ) . '</p></div>';
+						echo '<div class="updated"><p>' . __( 'Orders marked shipped.', 'topgroupshops' ) . '</p></div>';
 					break;
 
 				default:
@@ -386,10 +386,10 @@ class WCV_Vendor_Order_Page extends WP_List_Table
 		if ( !empty( $ids ) ) {
 			foreach ($ids as $order_id ) {
 				$order = wc_get_order( $order_id );
-				$vendors = WCV_Vendors::get_vendors_from_order( $order );
+				$vendors = TGS_Function_Vendors::get_vendors_from_order( $order );
 				$vendor_ids = array_keys( $vendors );
 				if ( !in_array( $user_id, $vendor_ids ) ) {
-					wp_die( __( 'You are not allowed to modify this order.', 'wcvendors' ) );
+					wp_die( __( 'You are not allowed to modify this order.', 'topgroupshops' ) );
 				}
 				$shippers = (array) get_post_meta( $order_id, 'wc_pv_shipped', true );
 				if( !in_array($user_id, $shippers)) {
@@ -398,7 +398,7 @@ class WCV_Vendor_Order_Page extends WP_List_Table
 					if ( !empty( $mails ) ) {
 						$mails[ 'WC_Email_Notify_Shipped' ]->trigger( $order_id, $user_id );
 					}
-					do_action('wcvendors_vendor_ship', $order_id, $user_id);
+					do_action('topgroupshops_vendor_ship', $order_id, $user_id);
 				}
 				update_post_meta( $order_id, 'wc_pv_shipped', $shippers );
 			}
@@ -436,7 +436,7 @@ class WCV_Vendor_Order_Page extends WP_List_Table
 			foreach ( $_orders as $order ) {
 
 				$order = new WC_Order( $order->order_id );
-				$valid_items = WCV_Queries::get_products_for_order( $order->id );
+				$valid_items = TGS_Queries::get_products_for_order( $order->id );
 				$valid = array();
 
 				$items = $order->get_items();
@@ -456,7 +456,7 @@ class WCV_Vendor_Order_Page extends WP_List_Table
 					$products .= '<strong>'. $item['qty'] . ' x ' . $item['name'] . '</strong><br />'; 
 
 					if ( $metadata = $order->has_meta( $order_item_id ) ) {
-						$products .= '<table cellspacing="0" class="wcv_display_meta">';
+						$products .= '<table cellspacing="0" class="tgs_display_meta">';
 						foreach ( $metadata as $meta ) {
 
 							// Skip hidden core fields
@@ -471,7 +471,7 @@ class WCV_Vendor_Order_Page extends WP_List_Table
 								'_line_tax',
 								'_vendor_order_item_id', 
 								'_vendor_commission', 
-								WC_Vendors::$pv_options->get_option( 'sold_by_label' ), 
+								TGS_Vendors::$pv_options->get_option( 'sold_by_label' ), 
 							) ) ) ) {
 								continue;
 							}
@@ -498,9 +498,9 @@ class WCV_Vendor_Order_Page extends WP_List_Table
 				}
 
 				$shippers = (array) get_post_meta( $order->id, 'wc_pv_shipped', true );
-				$shipped = in_array($user_id, $shippers) ? __( 'Yes', 'wcvendors' ) : __( 'No', 'wcvendors' ) ; 
+				$shipped = in_array($user_id, $shippers) ? __( 'Yes', 'topgroupshops' ) : __( 'No', 'topgroupshops' ) ; 
 
-				$sum = WCV_Queries::sum_for_orders( array( $order->id ), array('vendor_id' =>get_current_user_id() ), false ); 
+				$sum = TGS_Queries::sum_for_orders( array( $order->id ), array('vendor_id' =>get_current_user_id() ), false ); 
 				$sum = reset( $sum ); 
 				$total = $sum->line_total; 
 
@@ -513,10 +513,10 @@ class WCV_Vendor_Order_Page extends WP_List_Table
 				// 	$order_notes = $order->get_customer_order_notes();			
 
 				// 	$comment_output .= '<a href="#TB_inline?width=600&height=550&inlineId=order-comment-window-'.$model_id.'" class="thickbox">'; 
-				// 	$comment_output .= sprintf( __( 'Comments (%s)', 'wcvendors' ), count( $order_notes ) );
+				// 	$comment_output .= sprintf( __( 'Comments (%s)', 'topgroupshops' ), count( $order_notes ) );
 				// 	$comment_output .= '</a>';	
 				// 	$comment_output .= '<div id="order-comment-window-'.$model_id.'" style="display:none;">'; 
-				// 	$comment_output .= '<h3>'.__('Comments to Customer', 'wcvendors' ). '</h3>';
+				// 	$comment_output .= '<h3>'.__('Comments to Customer', 'topgroupshops' ). '</h3>';
 
 				// 	if ( !empty( $order_notes ) ) { 
 
@@ -525,13 +525,13 @@ class WCV_Vendor_Order_Page extends WP_List_Table
 				// 			$comment_output .= '<p>'; 
 				// 			$comment_output .= $order_note->comment_content; 
 				// 			$comment_output .= '<br />'; 
-				// 		    $comment_output .= sprintf(__( 'added %s ago', 'wcvendors' ), $last_added ); 
+				// 		    $comment_output .= sprintf(__( 'added %s ago', 'topgroupshops' ), $last_added ); 
 				// 			$comment_output .= '<br />'; 
 				// 			$comment_output .= '</p>';
 				// 		}
 
 				// 	} else { 
-				// 		$comment_output .= '<p>'.__('No comments currently to customer.', 'wcvendors' ). '</p>';
+				// 		$comment_output .= '<p>'.__('No comments currently to customer.', 'topgroupshops' ). '</p>';
 				// 	}
 
 				// 	if ( $this->can_add_comments ) { 
@@ -540,7 +540,7 @@ class WCV_Vendor_Order_Page extends WP_List_Table
 				// 			<textarea name="comment_text" style="width:97%"></textarea>
 				// 			<input type="hidden" name="order_id" value="'. $order->id .'">
 				// 			<input type="hidden" name="action" value="add_comment">
-				// 			<input class="btn btn-large btn-block" type="submit" name="submit_comment" value="'.__( 'Add comment', 'wcvendors' ).'">';
+				// 			<input class="btn btn-large btn-block" type="submit" name="submit_comment" value="'.__( 'Add comment', 'topgroupshops' ).'">';
 				// 	} 
 
 				// 	$comment_output .= '</div>'; 
@@ -619,7 +619,7 @@ class WCV_Vendor_Order_Page extends WP_List_Table
 		if ( empty( $product_ids ) ) return false;
 
 		$defaults = array(
-			'status' => apply_filters( 'wcvendors_completed_statuses', array( 'completed', 'processing' ) ),
+			'status' => apply_filters( 'topgroupshops_completed_statuses', array( 'completed', 'processing' ) ),
 		);
 
 		$args = wp_parse_args( $args, $defaults );

@@ -3,12 +3,12 @@
 /**
  * Vendor functions
  *
- * @author  Matt Gates <http://mgates.me>, WC Vendors <http://wcvendors.com>
- * @package WCVendors
+ * @author  Thanh Nguyen <http://topgroupshops.com.vn>
+ * @package groupshops
  */
 	
 
-class WCV_Vendors
+class TGS_Function_Vendors
 {
 
 	/**
@@ -62,10 +62,10 @@ class WCV_Vendors
 		$vendors = array();
 		foreach ( $items as $key => $product ) {
 
-			$author = WCV_Vendors::get_vendor_from_product( $product[ 'product_id' ] );
+			$author = TGS_Function_Vendors::get_vendor_from_product( $product[ 'product_id' ] );
 
 			// Only store the vendor authors
-			if ( !WCV_Vendors::is_vendor( $author ) ) continue;
+			if ( !TGS_Function_Vendors::is_vendor( $author ) ) continue;
 
 			$vendors[ $author ] = the_author_meta( 'author_paypal', $author );
 		}
@@ -86,28 +86,28 @@ class WCV_Vendors
 	{
 		global $woocommerce;
 
-		$give_tax       	= WC_Vendors::$pv_options->get_option( 'give_tax' );
-		$give_shipping 		= WC_Vendors::$pv_options->get_option( 'give_shipping' );
+		$give_tax       	= TGS_Vendors::$pv_options->get_option( 'give_tax' );
+		$give_shipping 		= TGS_Vendors::$pv_options->get_option( 'give_shipping' );
 		$receiver      		= array();
 		$shipping_given 	= 0;
 		$tax_given      	= 0;
 
-		WCV_Shipping::$pps_shipping_costs = array();
+		TGS_Shipping::$pps_shipping_costs = array();
 		foreach ( $order->get_items() as $key => $product ) {
 
 			$product_id 				= !empty( $product[ 'variation_id' ] ) ? $product[ 'variation_id' ] : $product[ 'product_id' ];
-			$author     				= WCV_Vendors::get_vendor_from_product( $product_id );
-			$give_tax_override 			= get_user_meta( $author, 'wcv_give_vendor_tax', true ); 
-			$give_shipping_override 	= get_user_meta( $author, 'wcv_give_vendor_shipping', true ); 
-			$is_vendor  				= WCV_Vendors::is_vendor( $author );
-			$commission 				= $is_vendor ? WCV_Commission::calculate_commission( $product[ 'line_subtotal' ], $product_id, $order, $product[ 'qty' ] ) : 0;
+			$author     				= TGS_Function_Vendors::get_vendor_from_product( $product_id );
+			$give_tax_override 			= get_user_meta( $author, 'tgs_give_vendor_tax', true ); 
+			$give_shipping_override 	= get_user_meta( $author, 'tgs_give_vendor_shipping', true ); 
+			$is_vendor  				= TGS_Function_Vendors::is_vendor( $author );
+			$commission 				= $is_vendor ? TGS_Commission::calculate_commission( $product[ 'line_subtotal' ], $product_id, $order, $product[ 'qty' ] ) : 0;
 			$tax        				= !empty( $product[ 'line_tax' ] ) ? (float) $product[ 'line_tax' ] : 0;
 			
 			// Check if shipping is enabled
 			if ( get_option('woocommerce_calc_shipping') === 'no' ) { 
 				$shipping = 0; $shipping_tax = 0; 
 			} else {
-					$shipping_costs = WCV_Shipping::get_shipping_due( $order->id, $product, $author );
+					$shipping_costs = TGS_Shipping::get_shipping_due( $order->id, $product, $author );
 					$shipping = $shipping_costs['amount']; 
 					$shipping_tax = $shipping_costs['tax']; 
 			}
@@ -311,7 +311,7 @@ class WCV_Vendors
 	{
 		$user = get_userdata( $user_id ); 
 
-		$vendor_roles = apply_filters( 'wcvendors_vendor_roles', array( 'vendor') ); 
+		$vendor_roles = apply_filters( 'topgroupshops_vendor_roles', array( 'vendor') ); 
 		
 		if (is_object($user)) { 
 
@@ -377,7 +377,7 @@ class WCV_Vendors
 		$vendor = !$slug ? get_userdata( $vendor_id )->user_login : $slug;
 
 		if ( get_option( 'permalink_structure' ) ) {
-			$permalink = trailingslashit( WC_Vendors::$pv_options->get_option( 'vendor_shop_permalink' ) );
+			$permalink = trailingslashit( TGS_Vendors::$pv_options->get_option( 'vendor_shop_permalink' ) );
 
 			return trailingslashit( home_url( sprintf( '/%s%s', $permalink, $vendor ) ) );
 		} else {
@@ -434,7 +434,7 @@ class WCV_Vendors
 	public static function is_vendor_page() { 
 
 		$vendor_shop = urldecode( get_query_var( 'vendor_shop' ) );
-		$vendor_id   = WCV_Vendors::get_vendor_id( $vendor_shop );
+		$vendor_id   = TGS_Function_Vendors::get_vendor_id( $vendor_shop );
 
 		return $vendor_id ? true : false; 
 
@@ -445,14 +445,14 @@ class WCV_Vendors
 	*/
 	public static function is_vendor_product_page($vendor_id) { 
 
-		$vendor_product = WCV_Vendors::is_vendor_product( wcv_get_user_role($vendor_id) ); 
+		$vendor_product = TGS_Function_Vendors::is_vendor_product( tgs_get_user_role($vendor_id) ); 
 		return $vendor_product ? true : false; 
 
 	} // is_vendor_product_page()
 
 	public static function get_vendor_sold_by( $vendor_id ){ 
 
-		$vendor_display_name = WC_Vendors::$pv_options->get_option( 'vendor_display_name' ); 
+		$vendor_display_name = TGS_Vendors::$pv_options->get_option( 'vendor_display_name' ); 
 		$vendor =  get_userdata( $vendor_id ); 
 
 		switch ($vendor_display_name) {
@@ -467,7 +467,7 @@ class WCV_Vendors
 				break;
 
 			default:
-				$display_name = WCV_Vendors::get_vendor_shop_name( $vendor_id ); 
+				$display_name = TGS_Function_Vendors::get_vendor_shop_name( $vendor_id ); 
 				break;
 		}
 
@@ -491,7 +491,7 @@ class WCV_Vendors
 			if ( isset($item['product_id']) && $item['product_id'] !== 0 ) {
 				// check if product is from vendor
 				$product_author = get_post_field( 'post_author', $item['product_id'] );
-				if (WCV_Vendors::is_vendor( $product_author ) ) {
+				if (TGS_Function_Vendors::is_vendor( $product_author ) ) {
 					$vendor_items[ $product_author ][ $item_id ] = array (
 						'item_id'		=> $item_id,
 						'qty'			=> $item['qty'],
@@ -500,7 +500,7 @@ class WCV_Vendors
 						'tax'			=> $item['line_tax'],
 						'subtotal_tax'	=> $item['line_subtotal_tax'],
 						'tax_data'		=> maybe_unserialize( $item['line_tax_data'] ),
-						'commission'	=> WCV_Commission::calculate_commission( $item['line_subtotal'], $item['product_id'], $order, $item['qty'] ),
+						'commission'	=> TGS_Commission::calculate_commission( $item['line_subtotal'], $item['product_id'], $order, $item['qty'] ),
 					);
 				}
 			}
@@ -508,7 +508,7 @@ class WCV_Vendors
 
 		foreach ($vendor_items as $vendor_id => $items) {
 			if (!empty($items)) {
-				$vendor_order = WCV_Vendors::create_vendor_order( array(
+				$vendor_order = TGS_Function_Vendors::create_vendor_order( array(
 					'order_id'   => $order_id,
 					'vendor_id'  => $vendor_id,
 					'line_items' => $items
@@ -668,4 +668,4 @@ class WCV_Vendors
 
 	} // get_vendor_orders()
 
-} // WCV_Vendors 
+} // TGS_Function_Vendors 

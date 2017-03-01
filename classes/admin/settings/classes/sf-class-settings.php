@@ -38,9 +38,9 @@
  * @subpackage  WP-Simple-Settings-Framework
  * @copyright   2012 Matt Gates.
  * @license     http://www.opensource.org/licenses/bsd-license.php  BSD License
- * @link        http://mgates.me
+ * @link        http://topgroupshops.com.vn
  * @version     1.1
- * @author      Matt Gates <info@mgates.me>
+ * @author      Thanh Nguyen
  * @package     WordPress
  */
 
@@ -150,7 +150,7 @@ if ( !class_exists( 'SF_Settings_API' ) ) {
 			$this_plugin = plugin_basename( $this->file );
 			$page        = strpos( $this->menu, '.php' ) ? $this->menu : 'admin.php';
 			if ( $file == $this_plugin ) {
-				$settings_link = '<a href="' . $page . '?page=' . $this->id . '">' . __( 'Settings', 'wcvendors' ) . '</a>';
+				$settings_link = '<a href="' . $page . '?page=' . $this->id . '">' . __( 'Settings', 'topgroupshops' ) . '</a>';
 				array_unshift( $links, $settings_link );
 			}
 
@@ -196,7 +196,7 @@ if ( !class_exists( 'SF_Settings_API' ) ) {
 			if (is_admin() || $pagenow === 'wc_prd_vendor') { 
 				wp_register_script( 'bootstrap-tooltip', $this->assets_url . 'js/bootstrap-tooltip.js', array( 'jquery' ), '1.0' );
 				wp_register_script( 'select2', $this->assets_url . 'js/select2/select2.min.js', array( 'jquery' ), '3.5.2' );
-				wp_register_script( 'wcvendors-media', $this->assets_url . 'js/wcvendors-media.js', array( 'jquery' ), '1.0' );
+				wp_register_script( 'topgroupshops-media', $this->assets_url . 'js/topgroupshops-media.js', array( 'jquery' ), '1.0' );
 				wp_register_script( 'sf-scripts', $this->assets_url . 'js/sf-jquery.js', array( 'jquery' ), '1.0' );
 				wp_register_style( 'select2', $this->assets_url . 'js/select2/select2.css' );
 				wp_register_style( 'sf-styles', $this->assets_url . 'css/sf-styles.css' );
@@ -222,7 +222,7 @@ if ( !class_exists( 'SF_Settings_API' ) ) {
 
 			wp_enqueue_script( 'bootstrap-tooltip' );
 			wp_enqueue_script( 'select2' );
-			wp_enqueue_script( 'wcvendors-media' );
+			wp_enqueue_script( 'topgroupshops-media' );
 			wp_enqueue_script( 'sf-scripts' );
 
 			wp_enqueue_style( 'wp-color-picker' );
@@ -299,7 +299,7 @@ if ( !class_exists( 'SF_Settings_API' ) ) {
 				/* @TODO: Can prob add this to the activation hook. */
 				$this->set_defaults( $this->current_options );
 			} else {
-				wp_die( __( 'Could not load settings at: ', 'wcvendors' ) . '<br/><code>' . $option_file . '</code>', __( 'Error - WP Settings Framework', 'wcvendors' ) );
+				wp_die( __( 'Could not load settings at: ', 'topgroupshops' ) . '<br/><code>' . $option_file . '</code>', __( 'Error - WP Settings Framework', 'topgroupshops' ) );
 			}
 		}
 
@@ -365,9 +365,9 @@ if ( !class_exists( 'SF_Settings_API' ) ) {
 			endforeach;
 
 			do_action( $this->id . '_options_updated', $clean, $tabname );
-			add_settings_error( $this->id, 'save_options', __( 'Settings saved.', 'wcvendors' ), 'updated' );
+			add_settings_error( $this->id, 'save_options', __( 'Settings saved.', 'topgroupshops' ), 'updated' );
 
-			update_option( WC_Vendors::$id . '_flush_rules', true ); 
+			update_option( TGS_Vendors::$id . '_flush_rules', true ); 
 
 			return apply_filters( $this->id . '_options_on_update', $clean, $tabname );
 		}
@@ -483,7 +483,7 @@ if ( !class_exists( 'SF_Settings_API' ) ) {
 				<p class="submit">
 					<input type="hidden" name="currentTab" value="<?php echo $tabname; ?>">
 					<input type="submit" name="update" class="button-primary"
-						   value="<?php echo sprintf( __( 'Save %s changes', 'wcvendors' ), $this->tab_headers[ $tabname ] ); ?>"/>
+						   value="<?php echo sprintf( __( 'Save %s changes', 'topgroupshops' ), $this->tab_headers[ $tabname ] ); ?>"/>
 				</p>
 			</form> <?php
 
@@ -496,7 +496,7 @@ if ( !class_exists( 'SF_Settings_API' ) ) {
 		private function template_footer()
 		{
 
-			$message = apply_filters( 'wcvendors_footer_msg', __( 'Please help with a <a href="https://wordpress.org/support/view/plugin-reviews/wc-vendors?rate=5#postform" target="top">High Five!</a> | <a href="https://www.wcvendors.com/product/wc-vendors-pro/" target="top">WC Vendors Pro</a> | <a href="https://www.wcvendors.com/product/stripe-commissions-gateway/" target="top">Stripe Commissions & Gateway</a> | <a href="https://www.wcvendors.com/kb/" target="top">KnowledgeBase</a> | <a href="https://www.wcvendors.com/help/" target="top">Help Forums</a>', 'wcvendors' ) ); 
+			$message = apply_filters( 'topgroupshops_footer_msg', __( 'Footer','topgroupshops' ) ); 
 
 			echo '<div><p>' . $message . '</a></p>'; 
 			echo '</div>';
@@ -781,14 +781,14 @@ if ( !class_exists( 'SF_Settings_API' ) ) {
 
 				echo str_replace( "'>", "'><option></option>", wp_dropdown_pages( $args ) );
 
-				echo '<a href="post.php?post='.$selected.'&action=edit" class="button">'.__( 'Edit Page', 'wcvendors' ).'</a>'; 
-				echo '<a href="'.get_permalink( $selected ). '" class="button">'.__( 'View Page', 'wcvendors' ).'</a>'; 
+				echo '<a href="post.php?post='.$selected.'&action=edit" class="button">'.__( 'Edit Page', 'topgroupshops' ).'</a>'; 
+				echo '<a href="'.get_permalink( $selected ). '" class="button">'.__( 'View Page', 'topgroupshops' ).'</a>'; 
 
 				echo $description;
 
 				if ( $select2 ) : ?>
 					<script type="text/javascript">jQuery(function () {
-							jQuery("#<?php echo $id; ?>").select2({ allowClear: true, placeholder: "<?php _e( 'Select a page...', 'wcvendors' ); ?>", width: '350px', allowMultiple: true });
+							jQuery("#<?php echo $id; ?>").select2({ allowClear: true, placeholder: "<?php _e( 'Select a page...', 'topgroupshops' ); ?>", width: '350px', allowMultiple: true });
 						});</script>
 				<?php endif;
 
@@ -815,14 +815,14 @@ if ( !class_exists( 'SF_Settings_API' ) ) {
 
 				echo str_replace( "'>", "' multiple=\"multiple\"><option></option>", wp_dropdown_pages( $args ) );
 
-				echo '<a href="post.php?post='.$selected.'&action=edit" class="button">'.__( 'Edit Page', 'wcvendors' ).'</a>'; 
-				echo '<a href="'.get_permalink( $selected ). '" class="button">'.__( 'View Page', 'wcvendors' ).'</a>'; 
+				echo '<a href="post.php?post='.$selected.'&action=edit" class="button">'.__( 'Edit Page', 'topgroupshops' ).'</a>'; 
+				echo '<a href="'.get_permalink( $selected ). '" class="button">'.__( 'View Page', 'topgroupshops' ).'</a>'; 
 
 				echo $description;
 
 				if ( $select2 ) : ?>
 					<script type="text/javascript">jQuery(function () {
-							jQuery("#<?php echo $id; ?>").select2({ allowClear: true, placeholder: "<?php _e( 'Select a page...', 'wcvendors' ); ?>", width: '350px', allowMultiple: true });
+							jQuery("#<?php echo $id; ?>").select2({ allowClear: true, placeholder: "<?php _e( 'Select a page...', 'topgroupshops' ); ?>", width: '350px', allowMultiple: true });
 						});</script>
 				<?php endif;
 
@@ -878,9 +878,9 @@ if ( !class_exists( 'SF_Settings_API' ) ) {
 				if ( empty ( $value ) ) $value = $std; 
 
 				?>	
-				<img class="wcv-image-container-<?php echo $id; ?>" src="<?php echo $value; ?>" alt="" style="max-width:100%;" />
+				<img class="tgs-image-container-<?php echo $id; ?>" src="<?php echo $value; ?>" alt="" style="max-width:100%;" />
 				<br />
-	        	<input id="wcv-add-<?php echo $id; ?>" type="button" class="<?php echo $class; ?>" value="<?php echo sprintf( __( 'Update %s', 'wcvendors' ), strtolower( $title ) ); ?>" data-id="<?php echo $id; ?>" data-save_button="<?php echo sprintf( __( 'Add %s', 'wcvendors' ), $title ); ?>" data-window_title="<?php echo sprintf( __( 'Add %s', 'wcvendors' ), strtolower( $title ) ); ?>" data-upload_notice="<?php echo sprintf( __( 'Upload an image for the %s', 'wcvendors' ), strtolower( $title ) ); ?>" />
+	        	<input id="tgs-add-<?php echo $id; ?>" type="button" class="<?php echo $class; ?>" value="<?php echo sprintf( __( 'Update %s', 'topgroupshops' ), strtolower( $title ) ); ?>" data-id="<?php echo $id; ?>" data-save_button="<?php echo sprintf( __( 'Add %s', 'topgroupshops' ), $title ); ?>" data-window_title="<?php echo sprintf( __( 'Add %s', 'topgroupshops' ), strtolower( $title ) ); ?>" data-upload_notice="<?php echo sprintf( __( 'Upload an image for the %s', 'topgroupshops' ), strtolower( $title ) ); ?>" />
 				<input type="hidden" name="<?php echo $name; ?>" id="<?php echo $id; ?>" value="<?php echo $value; ?>">
 				<?php 
 				break; 

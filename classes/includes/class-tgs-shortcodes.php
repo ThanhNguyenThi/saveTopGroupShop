@@ -1,14 +1,14 @@
 <?php
 /**
- * WCV_Shortcodes class. 
+ * TGS_Shortcodes class. 
  *
- * @class 		WCV_Shortcodes
+ * @class 		TGS_Shortcodes
  * @version		1.0.0
- * @package		WCVendors/Classes
+ * @package		groupshops/Classes
  * @category	Class
- * @author 		WC Vendors (Jamie Madden http://github.com/digitalchild)
+ * @author 		Thanh Nguyen
  */
-class WCV_Shortcodes {
+class TGS_Shortcodes {
 
 	/**
 	 * Initialise shortcodes
@@ -17,21 +17,21 @@ class WCV_Shortcodes {
 		// Define shortcodes
 
 		// Recent Products 
-		add_shortcode( 'wcv_recent_products', array( $this, 'recent_products'));
+		add_shortcode( 'tgs_recent_products', array( $this, 'recent_products'));
 		// Products by vendor
-		add_shortcode( 'wcv_products', array( $this, 'products'));
+		add_shortcode( 'tgs_products', array( $this, 'products'));
 		//Featured products by vendor
-		add_shortcode( 'wcv_featured_products', array( $this, 'featured_products'));
+		add_shortcode( 'tgs_featured_products', array( $this, 'featured_products'));
 		// Sale products by vendor
-		add_shortcode( 'wcv_sale_products', array( $this, 'sale_products'));
+		add_shortcode( 'tgs_sale_products', array( $this, 'sale_products'));
 		// Top Rated products by vendor 
-		add_shortcode( 'wcv_top_rated_products', array( $this, 'top_rated_products'));
+		add_shortcode( 'tgs_top_rated_products', array( $this, 'top_rated_products'));
 		// Best Selling product 
-		add_shortcode( 'wcv_best_selling_products', array( $this, 'best_selling_products'));
+		add_shortcode( 'tgs_best_selling_products', array( $this, 'best_selling_products'));
 		// List products in a category shortcode
-		add_shortcode( 'wcv_product_category', array( $this, 'product_category'));
+		add_shortcode( 'tgs_product_category', array( $this, 'product_category'));
 		// List of paginated vendors 
-		add_shortcode( 'wcv_vendorslist', array( $this, 'wcv_vendorslist' ) );
+		add_shortcode( 'tgs_vendorslist', array( $this, 'tgs_vendorslist' ) );
 
 	}
 
@@ -543,7 +543,7 @@ class WCV_Shortcodes {
 	  * 
 	  * 	@param $atts shortcode attributs 
 	*/
-	public function wcv_vendorslist( $atts ) {
+	public function tgs_vendorslist( $atts ) {
 
 		$html = ''; 
 		
@@ -603,17 +603,17 @@ class WCV_Shortcodes {
 	    // Loop through all vendors and output a simple link to their vendor pages
 	    foreach ($paged_vendors as $vendor) {
 	       wc_get_template( 'vendor-list.php', array(
-	      												'shop_link'			=> WCV_Vendors::get_vendor_shop_page($vendor->ID), 
+	      												'shop_link'			=> TGS_Function_Vendors::get_vendor_shop_page($vendor->ID), 
 														'shop_name'			=> $vendor->pv_shop_name, 
 														'vendor_id' 		=> $vendor->ID, 
 														'shop_description'	=> $vendor->pv_shop_description, 
-												), 'wc-vendors/front/', wcv_plugin_dir . 'templates/front/' );
+												), 'groupshops/front/', tgs_plugin_dir . 'templates/front/' );
 	    } // End foreach 
 	   	
-	   	$html .= '<ul class="wcv_vendorslist">' . ob_get_clean() . '</ul>';
+	   	$html .= '<ul class="tgs_vendorslist">' . ob_get_clean() . '</ul>';
 
 	    if ($total_vendors > $total_vendors_paged) {  
-			$html .= '<div class="wcv_pagination">';  
+			$html .= '<div class="tgs_pagination">';  
 			  $current_page = max( 1, get_query_var('paged') );  
 			  $html .= paginate_links( 	array(  
 			        'base' => get_pagenum_link( ) . '%_%',  

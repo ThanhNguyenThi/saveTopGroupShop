@@ -3,12 +3,12 @@
 /**
  * Mass pay users
  *
- * @author Matt Gates <http://mgates.me>
+ * @author Thanh Nguyen <http://topgroupshops.com.vn>
  * @package
  */
 
 
-class WCV_Mass_Pay
+class TGS_Mass_Pay
 {
 
 	private static $pluginDir;
@@ -48,7 +48,7 @@ class WCV_Mass_Pay
 	 */
 	private function get_users()
 	{
-		$orders = WCV_Commission::get_all_due();
+		$orders = TGS_Commission::get_all_due();
 		if ( empty( $orders ) ) return false;
 
 		//  Initialise the arrays
@@ -98,7 +98,7 @@ class WCV_Mass_Pay
 	{
 		global $wpdb;
 
-		return WCV_Commission::set_vendor_commission_paid( $vendor_ids );
+		return TGS_Commission::set_vendor_commission_paid( $vendor_ids );
 	}
 
 
@@ -112,7 +112,7 @@ class WCV_Mass_Pay
 	private function pay_vendors( $vendors )
 	{
 		if ( empty( $vendors ) ) {
-			$return = array( 'status' => 'error', 'msg' => __( 'No vendors found to pay. Maybe they haven\'t set a PayPal address?', 'wcvendors' ) );
+			$return = array( 'status' => 'error', 'msg' => __( 'No vendors found to pay. Maybe they haven\'t set a PayPal address?', 'topgroupshops' ) );
 			$this->mail_results( $return );
 
 			return $return;
@@ -150,7 +150,7 @@ class WCV_Mass_Pay
 		} catch ( Exception $ex ) {
 			$return = array(
 				'status' => 'error',
-				'msg'    => sprintf( __( 'Error: %s', 'wcvendors' ), $ex->getMessage() ),
+				'msg'    => sprintf( __( 'Error: %s', 'topgroupshops' ), $ex->getMessage() ),
 				'total'  => $total_pay,
 			);
 
@@ -164,13 +164,13 @@ class WCV_Mass_Pay
 				if ( $this->purge_user_meta( $vendor_ids ) ) {
 					$return = array(
 						'status' => 'updated',
-						'msg'    => __( 'All due commission has been paid for.', 'wcvendors' ),
+						'msg'    => __( 'All due commission has been paid for.', 'topgroupshops' ),
 						'total'  => $total_pay,
 					);
 				} else {
 					$return = array(
 						'status' => 'error',
-						'msg'    => __( 'All due commission has been paid for, but I could not clear it from their profiles due to an internal error. Commission will still be listed as due. Please manually mark the commission as paid from the Commissions page.', 'wcvendors' ),
+						'msg'    => __( 'All due commission has been paid for, but I could not clear it from their profiles due to an internal error. Commission will still be listed as due. Please manually mark the commission as paid from the Commissions page.', 'topgroupshops' ),
 						'total'  => $total_pay,
 					);
 				}
@@ -200,19 +200,19 @@ class WCV_Mass_Pay
 	{
 		global $woocommerce;
 
-		$send_results = WC_Vendors::$pv_options->get_option( 'mail_mass_pay_results' );
+		$send_results = TGS_Vendors::$pv_options->get_option( 'mail_mass_pay_results' );
 
 		if ( !$send_results ) return false;
 
 		$to      = sanitize_email( get_option( 'woocommerce_email_from_address' ) );
-		$subject = __( 'WooCommerce: Mass payments for vendors update', 'wcvendors' );
+		$subject = __( 'WooCommerce: Mass payments for vendors update', 'topgroupshops' );
 
-		$message = __( 'Hello! A payment was just triggered to mass pay all vendors their due commission.', 'wcvendors' ) . PHP_EOL . PHP_EOL;
-		$message .= sprintf( __( 'Payment status: %s.', 'wcvendors' ), $result[ 'status' ] ) . PHP_EOL;
-		$message .= sprintf( __( 'Payment message: %s.', 'wcvendors' ), $result[ 'msg' ] ) . PHP_EOL;
+		$message = __( 'Hello! A payment was just triggered to mass pay all vendors their due commission.', 'topgroupshops' ) . PHP_EOL . PHP_EOL;
+		$message .= sprintf( __( 'Payment status: %s.', 'topgroupshops' ), $result[ 'status' ] ) . PHP_EOL;
+		$message .= sprintf( __( 'Payment message: %s.', 'topgroupshops' ), $result[ 'msg' ] ) . PHP_EOL;
 
 		if ( !empty( $result[ 'total' ] ) )
-			$message .= sprintf( __( 'Payment total: %s.', 'wcvendors' ), $result[ 'total' ] );
+			$message .= sprintf( __( 'Payment total: %s.', 'topgroupshops' ), $result[ 'total' ] );
 
 		$sent = wp_mail( $to, $subject, $message, "From: " . $to . "\r\n" );
 

@@ -212,7 +212,7 @@ if ( tgs_is_woocommerce_activated() ) {
 				include_once(WC()->plugin_path() . '/includes/admin/wc-meta-box-functions.php');
 			}
 
-			new TGS_Vendors;
+			new TGS_Function_Vendors;
 			new TGS_Vendor_Shop;
 			new TGS_Vendor_Cart;
 			new TGS_Commission;

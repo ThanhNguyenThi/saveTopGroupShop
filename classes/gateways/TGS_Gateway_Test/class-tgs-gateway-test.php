@@ -5,34 +5,34 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * WC Vendors TEST SANDBOX Payment Gateway
+ * Group Shops TEST SANDBOX Payment Gateway
  *
- * Provides a test Payment Gateway, mainly for WC Vendors testing purposes.
+ * Provides a test Payment Gateway, mainly for Group Shops testing purposes.
  *
- * @class 		WC_Gateway_WCV_Gateway_Test
+ * @class 		WC_Gateway_TGS_Gateway_Test
  * @extends		WC_Payment_Gateway
  * @version		1.0.0
  * @package		WooCommerce/Classes/Payment
- * @author 		WC Vendors Ben Agresta
+ * @author 		Thanh Nguyen
  */
  
-function add_wcvendors_test_gateway( $methods )
+function add_topgroupshops_test_gateway( $methods )
 {
-        $methods[ ] = 'WC_Gateway_WCV_Gateway_Test';
+        $methods[ ] = 'WC_Gateway_TGS_Gateway_Test';
         return $methods;
 }
-add_filter( 'woocommerce_payment_gateways', 'add_wcvendors_test_gateway' );
+add_filter( 'woocommerce_payment_gateways', 'add_topgroupshops_test_gateway' );
 
-class WC_Gateway_WCV_Gateway_Test extends WC_Payment_Gateway {
+class WC_Gateway_TGS_Gateway_Test extends WC_Payment_Gateway {
 
     /**
      * Constructor for the gateway.
      */
 	public function __construct() {
-		$this->id                 = 'wcvendors_test_gateway';
+		$this->id                 = 'topgroupshops_test_gateway';
 		$this->icon               = apply_filters('woocommerce_cheque_icon', '');
 		$this->has_fields         = false;
-		$this->method_title       = __( 'WC Vendors Test Gateway', 'woocommerce' );
+		$this->method_title       = __( 'Group Shops Test Gateway', 'woocommerce' );
 		$this->method_description = __( 'This gateway will set orders to processing upon receipt allowing you to test transactions in your store.  Some WooCommerce included gateways have problems with this - you should use this gateway for all of your non-PayPal testing.', 'woocommerce' );
 
 		// Load the settings.
@@ -46,7 +46,7 @@ class WC_Gateway_WCV_Gateway_Test extends WC_Payment_Gateway {
 
 		// Actions
 		add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, array( $this, 'process_admin_options' ) );
-    	add_action( 'woocommerce_thankyou_wcvendors_test_gateway', array( $this, 'thankyou_page' ) );
+    	add_action( 'woocommerce_thankyou_topgroupshops_test_gateway', array( $this, 'thankyou_page' ) );
 
     	// Customer Emails
     	add_action( 'woocommerce_email_before_order_table', array( $this, 'email_instructions' ), 10, 3 );
@@ -61,21 +61,21 @@ class WC_Gateway_WCV_Gateway_Test extends WC_Payment_Gateway {
 			'enabled' => array(
 				'title'   => __( 'Enable/Disable', 'woocommerce' ),
 				'type'    => 'checkbox',
-				'label'   => __( 'Enable WC Vendors Test Gateway Payment', 'woocommerce' ),
+				'label'   => __( 'Enable Group Shops Test Gateway Payment', 'woocommerce' ),
 				'default' => 'no'
 			),
 			'title' => array(
 				'title'       => __( 'Title', 'woocommerce' ),
 				'type'        => 'text',
 				'description' => __( 'This controls the title which the user sees during checkout.', 'woocommerce' ),
-				'default'     => __( 'WC Vendors Test Gateway', 'woocommerce' ),
+				'default'     => __( 'Group Shops Test Gateway', 'woocommerce' ),
 				'desc_tip'    => true,
 			),
 			'description' => array(
 				'title'       => __( 'Description', 'woocommerce' ),
 				'type'        => 'textarea',
 				'description' => __( 'Payment method description that the customer will see on your checkout.', 'woocommerce' ),
-				'default'     => __( 'This is a test gateway -- not to be used on live sites for live transactions. <a href="http://www.wcvendors.com/" target="top">Click here to visit WCVendors.com</a>.', 'woocommerce' ),
+				'default'     => __( 'This is a test gateway -- not to be used on live sites for live transactions. <a href="http://www.topgoupshops.com.vn/" target="top">Click here to visit topgroupshops.com.vn</a>.', 'woocommerce' ),
 				'desc_tip'    => true,
 			),
 			'instructions' => array(
@@ -105,7 +105,7 @@ class WC_Gateway_WCV_Gateway_Test extends WC_Payment_Gateway {
      * @param bool $plain_text
      */
 	public function email_instructions( $order, $sent_to_admin, $plain_text = false ) {
-        if ( $this->instructions && ! $sent_to_admin && 'wcvendors_test_gateway' === $order->payment_method && $order->has_status( 'processing' ) ) {
+        if ( $this->instructions && ! $sent_to_admin && 'topgroupshops_test_gateway' === $order->payment_method && $order->has_status( 'processing' ) ) {
 			echo wpautop( wptexturize( $this->instructions ) ) . PHP_EOL;
 		}
 	}

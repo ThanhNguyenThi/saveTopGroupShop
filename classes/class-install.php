@@ -2,12 +2,12 @@
 /**
  * Install class on activation.
  *
- * @author  Matt Gates <http://mgates.me>
+ * @author  Thanh Nguyen <http://topgroupshops.com.vn>
  * @package ProductVendor
  */
 
 
-class WCV_Install
+class TGS_Install
 {
 
 	/**
@@ -17,17 +17,17 @@ class WCV_Install
 	 */
 	public function init()
 	{
-		$db_version = WC_Vendors::$pv_options->get_option( 'db_version' );
+		$db_version = TGS_Vendors::$pv_options->get_option( 'db_version' );
 
 		// Initial Install 
 		if ( version_compare( $db_version, '1.0', '<' ) ) {
 			
-			$this->install_wcvendor();
-			WC_Vendors::$pv_options->update_option( 'db_version', '1.5.0' );
+			$this->install_topgroupshops();
+			TGS_Vendors::$pv_options->update_option( 'db_version', '1.5.0' );
 
 		} else if ( version_compare( $db_version, '1.9.0', '<' ) ) {
 
-			$orders_page = get_post( WC_Vendors::$pv_options->get_option( 'orders_page' ) ); 
+			$orders_page = get_post( TGS_Vendors::$pv_options->get_option( 'orders_page' ) ); 
 
 			// Only update the page slug for orders if it is called orders 
 			// This is due to WC 2.6 api changes 
@@ -42,13 +42,13 @@ class WCV_Install
 			            )
 			        );
 					
-					WC_Vendors::$pv_options->update_option( 'db_version', '1.9.0' );	
+					TGS_Vendors::$pv_options->update_option( 'db_version', '1.9.0' );	
 				} 
 			}
 
 		} else if ( version_compare( $db_version, '1.9.1', '<' ) ) { 
 			remove_role( 'vendor' );
-			add_role( 'vendor', __('Vendor', 'wcvendors') , array(
+			add_role( 'vendor', __('Vendor', 'topgroupshops') , array(
 											   'assign_product_terms'     => true,
 											   'edit_products'            => true,
 											   'edit_product'             => true,
@@ -61,7 +61,7 @@ class WCV_Install
 											   'view_woocommerce_reports' => true,
 										  ) );
 
-			WC_Vendors::$pv_options->update_option( 'db_version', '1.9.1' );	
+			TGS_Vendors::$pv_options->update_option( 'db_version', '1.9.1' );	
 		}
 
 	} // init()
@@ -70,7 +70,7 @@ class WCV_Install
 	/**
 	 * Grouped functions for installing the WC Vendor plugin
 	 */
-	private function install_wcvendor()
+	private function install_topgroupshops()
 	{
 		// Clear the cron
 		wp_clear_scheduled_hook( 'pv_schedule_mass_payments' );
@@ -82,7 +82,7 @@ class WCV_Install
 		$this->create_new_tables();
 
 		// Create the Orders page if it doesn't exist
-		$orders_page = WC_Vendors::$pv_options->get_option( 'orders_page' );
+		$orders_page = TGS_Vendors::$pv_options->get_option( 'orders_page' );
 		if ( empty( $orders_page ) ) $this->create_new_pages();
 	}
 
@@ -95,14 +95,14 @@ class WCV_Install
 	private function add_new_roles()
 	{
 		remove_role( 'pending_vendor' );
-		add_role( 'pending_vendor', __( 'Pending Vendor', 'wcvendors' ), array(
+		add_role( 'pending_vendor', __( 'Pending Vendor', 'topgroupshops' ), array(
 																					  'read'         => true,
 																					  'edit_posts'   => false,
 																					  'delete_posts' => false
 																				 ) );
 
 		remove_role( 'vendor' );
-		add_role( 'vendor', __('Vendor', 'wcvendors') , array(
+		add_role( 'vendor', __('Vendor', 'topgroupshops') , array(
 										   'assign_product_terms'     => true,
 										   'edit_products'            => true,
 										   'edit_product'             => true,
@@ -160,7 +160,7 @@ class WCV_Install
 	{
 		global $wpdb;
 
-		$page_id = WC_Vendors::$pv_options->get_option( $slug . '_page' );
+		$page_id = TGS_Vendors::$pv_options->get_option( $slug . '_page' );
 
 		if ( $page_id > 0 && get_post( $page_id ) ) {
 			return $page_id;
@@ -169,7 +169,7 @@ class WCV_Install
 		$page_found = $wpdb->get_var( $wpdb->prepare( "SELECT ID FROM " . $wpdb->posts . " WHERE post_name = %s LIMIT 1;", $slug ) );
 		if ( $page_found ) {
 			if ( !$page_id ) {
-				WC_Vendors::$pv_options->update_option( $slug . '_page', $page_found );
+				TGS_Vendors::$pv_options->update_option( $slug . '_page', $page_found );
 
 				return $page_found;
 			}
@@ -189,7 +189,7 @@ class WCV_Install
 		);
 
 		$page_id = wp_insert_post( $page_data );
-		WC_Vendors::$pv_options->update_option( $slug . '_page', $page_id );
+		TGS_Vendors::$pv_options->update_option( $slug . '_page', $page_id );
 
 		return $page_id;
 	}
@@ -202,9 +202,9 @@ class WCV_Install
 	{
 		global $wpdb;
 
-		$vendor_page_id = $this->create_page( 'vendor_dashboard', __( 'Vendor Dashboard', 'wcvendors' ), '[wcv_vendor_dashboard]' );
-		$this->create_page( 'product_orders', __( 'Orders', 'wcvendors' ), '[wcv_orders]', $vendor_page_id );
-		$this->create_page( 'shop_settings', __( 'Shop Settings', 'wcvendors' ), '[wcv_shop_settings]', $vendor_page_id );
+		$vendor_page_id = $this->create_page( 'vendor_dashboard', __( 'Vendor Dashboard', 'topgroupshops' ), '[tgs_vendor_dashboard]' );
+		$this->create_page( 'product_orders', __( 'Orders', 'topgroupshops' ), '[tgs_orders]', $vendor_page_id );
+		$this->create_page( 'shop_settings', __( 'Shop Settings', 'topgroupshops' ), '[tgs_shop_settings]', $vendor_page_id );
 	}
 
 
@@ -251,7 +251,7 @@ class WCV_Install
 
 			case '1.4.0':
 
-				add_role( 'pending_vendor', __( 'Pending Vendor', 'wcvendors' ), array(
+				add_role( 'pending_vendor', __( 'Pending Vendor', 'topgroupshops' ), array(
 																							  'read'         => true,
 																							  'edit_posts'   => false,
 																							  'delete_posts' => false
@@ -274,7 +274,7 @@ class WCV_Install
 			case '1.4.5':
 
 				// Flush rules to fix the /page/2/ issue on vendor shop pages
-				update_option( WC_Vendors::$id . '_flush_rules', true );
+				update_option( TGS_Vendors::$id . '_flush_rules', true );
 
 			default:
 				// code...

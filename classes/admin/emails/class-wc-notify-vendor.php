@@ -24,11 +24,11 @@ class WC_Email_Notify_Vendor extends WC_Email
 	function __construct()
 	{
 		$this->id          = 'vendor_new_order';
-		$this->title       = __( 'Notify vendors', 'wcvendors' );
-		$this->description = __( 'New order emails are sent when an order is received/paid by a customer.', 'wcvendors' );
+		$this->title       = __( 'Notify vendors', 'topgroupshops' );
+		$this->description = __( 'New order emails are sent when an order is received/paid by a customer.', 'topgroupshops' );
 
-		$this->heading = __( 'New customer order', 'wcvendors' );
-		$this->subject = __( '[{blogname}] New customer order ({order_number}) - {order_date}', 'wcvendors' );
+		$this->heading = __( 'New customer order', 'topgroupshops' );
+		$this->subject = __( '[{blogname}] New customer order ({order_number}) - {order_date}', 'topgroupshops' );
 
 		$this->template_html  = 'vendor-new-order.php';
 		$this->template_plain = 'vendor-new-order.php';
@@ -102,30 +102,30 @@ class WC_Email_Notify_Vendor extends WC_Email
 	function check_order_totals( $total_rows, $order )
 	{
 
-		$commission_label 	= apply_filters('wcv_notify_vendor_commission_label', __( 'Commission Subtotal:', 'wcvendors' ) ) ;
+		$commission_label 	= apply_filters('tgs_notify_vendor_commission_label', __( 'Commission Subtotal:', 'topgroupshops' ) ) ;
 		$return[ 'cart_subtotal' ]            = $total_rows[ 'cart_subtotal' ];
 		$return[ 'cart_subtotal' ][ 'label' ] = $commission_label; 
 
-		if ( WC_Vendors::$pv_options->get_option( 'give_tax' ) ) {
+		if ( TGS_Vendors::$pv_options->get_option( 'give_tax' ) ) {
 			$return[ 'tax_subtotal'] = array( 'label' => '', 'value' => ''); 
-			$return[ 'tax_subtotal']['label'] = apply_filters('wcv_notify_vendor_tax_label', __( 'Tax Subtotal:', 'wcvendors' ) ) ;
+			$return[ 'tax_subtotal']['label'] = apply_filters('tgs_notify_vendor_tax_label', __( 'Tax Subtotal:', 'topgroupshops' ) ) ;
 		} 
 
-		$dues = WCV_Vendors::get_vendor_dues_from_order( $order );
+		$dues = TGS_Function_Vendors::get_vendor_dues_from_order( $order );
 
 		foreach ( $dues as $due ) {
 			if ( $this->current_vendor == $due['vendor_id'] ) {
 				if (!empty($return[ 'shipping' ]))	$return[ 'shipping' ]          = $total_rows[ 'shipping' ];
-				$return[ 'shipping' ]['label']   = __( 'Shipping Subtotal:', 'wcvendors' );
+				$return[ 'shipping' ]['label']   = __( 'Shipping Subtotal:', 'topgroupshops' );
 				$return[ 'shipping' ][ 'value' ] = woocommerce_price( $due['shipping'] );
-				if ( WC_Vendors::$pv_options->get_option( 'give_tax' ) ) {
+				if ( TGS_Vendors::$pv_options->get_option( 'give_tax' ) ) {
 					$return[ 'tax_subtotal']['value'] += $due['tax']; 
 				}
 				break;
 			}
 		}
 		// Format tax price 
-		if ( WC_Vendors::$pv_options->get_option( 'give_tax' ) ) { 
+		if ( TGS_Vendors::$pv_options->get_option( 'give_tax' ) ) { 
 			$return[ 'tax_subtotal']['value'] = woocommerce_price( $return[ 'tax_subtotal'] ['value'] ); 
 		} 
 
@@ -148,10 +148,10 @@ class WC_Email_Notify_Vendor extends WC_Email
 		foreach ( $items as $key => $product ) {
 
 			if ( empty( $product[ 'product_id' ] ) ) continue;
-			$author = WCV_Vendors::get_vendor_from_product( $product[ 'product_id' ] );
+			$author = TGS_Function_Vendors::get_vendor_from_product( $product[ 'product_id' ] );
 
 			// Only store the vendor authors
-			if ( !WCV_Vendors::is_vendor( $author ) ) {
+			if ( !TGS_Function_Vendors::is_vendor( $author ) ) {
 				unset( $items[ $key ] );
 				continue;
 			}
@@ -180,7 +180,7 @@ class WC_Email_Notify_Vendor extends WC_Email
 			//  If this is a line item 
 			if ($product['type'] == 'line_item') { 
 
-				$author = WCV_Vendors::get_vendor_from_product( $product[ 'product_id' ] );
+				$author = TGS_Function_Vendors::get_vendor_from_product( $product[ 'product_id' ] );
 
 				if ( $this->current_vendor != $author) {
 					unset( $items[ $key ] );
@@ -189,13 +189,13 @@ class WC_Email_Notify_Vendor extends WC_Email
 
 					// If display commission is ticked show this otherwise show the full price. 
 					if ( 'yes' == $settings['commission_display'] ){ 
-						$commission_due = WCV_Commission::calculate_commission( $product[ 'line_subtotal' ], $product[ 'product_id' ], $order, $product[ 'qty' ] );
+						$commission_due = TGS_Commission::calculate_commission( $product[ 'line_subtotal' ], $product[ 'product_id' ], $order, $product[ 'qty' ] );
 
 						$items[ $key ][ 'line_subtotal' ] = $commission_due;
 						$items[ $key ][ 'line_total' ]    = $commission_due;
 
 						// Don't display tax if give tax is not enabled. 
-						if ( !WC_Vendors::$pv_options->get_option( 'give_tax' ) ) { 
+						if ( !TGS_Vendors::$pv_options->get_option( 'give_tax' ) ) { 
 							unset($items[ $key ][ 'line_tax' ]) ; 
 						}
 					} 
@@ -253,41 +253,41 @@ class WC_Email_Notify_Vendor extends WC_Email
 	{
 		$this->form_fields = array(
 			'enabled'    => array(
-				'title'   => __( 'Enable/Disable', 'wcvendors' ),
+				'title'   => __( 'Enable/Disable', 'topgroupshops' ),
 				'type'    => 'checkbox',
-				'label'   => __( 'Enable this email notification', 'wcvendors' ),
+				'label'   => __( 'Enable this email notification', 'topgroupshops' ),
 				'default' => 'yes'
 			),
 			'subject'    => array(
-				'title'       => __( 'Subject', 'wcvendors' ),
+				'title'       => __( 'Subject', 'topgroupshops' ),
 				'type'        => 'text',
-				'description' => sprintf( __( 'This controls the email subject line. Leave blank to use the default subject: <code>%s</code>.', 'wcvendors' ), $this->subject ),
+				'description' => sprintf( __( 'This controls the email subject line. Leave blank to use the default subject: <code>%s</code>.', 'topgroupshops' ), $this->subject ),
 				'placeholder' => '',
 				'default'     => ''
 			),
 			'heading'    => array(
-				'title'       => __( 'Email Heading', 'wcvendors' ),
+				'title'       => __( 'Email Heading', 'topgroupshops' ),
 				'type'        => 'text',
-				'description' => sprintf( __( 'This controls the main heading contained within the email notification. Leave blank to use the default heading: <code>%s</code>.', 'wcvendors' ), $this->heading ),
+				'description' => sprintf( __( 'This controls the main heading contained within the email notification. Leave blank to use the default heading: <code>%s</code>.', 'topgroupshops' ), $this->heading ),
 				'placeholder' => '',
 				'default'     => ''
 			),
 			'commission_display'    => array(
-				'title'   => __( 'Product Totals', 'wcvendors' ),
+				'title'   => __( 'Product Totals', 'topgroupshops' ),
 				'type'    => 'checkbox',
-				'label'   => __( 'Show the commission due/paid as the product totals instead of the product prices.', 'wcvendors' ),
+				'label'   => __( 'Show the commission due/paid as the product totals instead of the product prices.', 'topgroupshops' ),
 				'default' => 'yes'
 			),
 			'email_type' => array(
-				'title'       => __( 'Email type', 'wcvendors' ),
+				'title'       => __( 'Email type', 'topgroupshops' ),
 				'type'        => 'select',
-				'description' => __( 'Choose which format of email to send.', 'wcvendors' ),
+				'description' => __( 'Choose which format of email to send.', 'topgroupshops' ),
 				'default'     => 'html',
 				'class'       => 'email_type',
 				'options'     => array(
-					'plain'     => __( 'Plain text', 'wcvendors' ),
-					'html'      => __( 'HTML', 'wcvendors' ),
-					'multipart' => __( 'Multipart', 'wcvendors' ),
+					'plain'     => __( 'Plain text', 'topgroupshops' ),
+					'html'      => __( 'HTML', 'topgroupshops' ),
+					'multipart' => __( 'Multipart', 'topgroupshops' ),
 				)
 			)
 		);

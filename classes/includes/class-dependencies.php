@@ -1,11 +1,11 @@
 <?php
 /**
- * WCV Dependency Checker
+ * TGS Dependency Checker
  *
  * Checks if a required plugin is enabled
  */
 
-class WCV_Dependencies
+class TGS_Dependencies
 {
 
 	private static $active_plugins;

@@ -2,11 +2,11 @@
 /**
  * Cron class
  *
- * @package WC_Vendors
+ * @package groupshops
  */
 
 
-class WCV_Cron
+class TGS_Cron
 {
 
 
@@ -15,9 +15,9 @@ class WCV_Cron
 	 */
 	function __construct()
 	{
-		add_filter( 'cron_schedules', array( 'WCV_Cron', 'custom_cron_intervals' ) );
-		add_action( WC_Vendors::$id . '_options_updated', array( 'WCV_Cron', 'check_schedule' ) );
-		add_filter( WC_Vendors::$id . '_options_on_update', array( 'WCV_Cron', 'check_schedule_now' ) );
+		add_filter( 'cron_schedules', array( 'TGS_Cron', 'custom_cron_intervals' ) );
+		add_action( TGS_Vendors::$id . '_options_updated', array( 'TGS_Cron', 'check_schedule' ) );
+		add_filter( TGS_Vendors::$id . '_options_on_update', array( 'TGS_Cron', 'check_schedule_now' ) );
 	}
 
 
@@ -39,12 +39,12 @@ class WCV_Cron
 		 * 3. Manual was not selected
 		 */
 		if ( ( $old_interval != $new_interval ) && !$instapay && $new_interval != 'manual' ) {
-			WCV_Cron::remove_cron_schedule( $options );
-			WCV_Cron::schedule_cron( $new_interval );
+			TGS_Cron::remove_cron_schedule( $options );
+			TGS_Cron::schedule_cron( $new_interval );
 		}
 
 		if ( $new_interval == 'manual' || $instapay ) {
-			WCV_Cron::remove_cron_schedule( $options );
+			TGS_Cron::remove_cron_schedule( $options );
 		}
 
 	}
@@ -59,14 +59,14 @@ class WCV_Cron
 	 */
 	public static function check_schedule_now( $options )
 	{
-		$old_schedule = WC_Vendors::$pv_options->get_option( 'schedule' );
+		$old_schedule = TGS_Vendors::$pv_options->get_option( 'schedule' );
 		$new_schedule = $options[ 'schedule' ];
 
 		if ( $new_schedule == 'now' ) {
-			$return                = WCV_Cron::pay_now();
+			$return                = TGS_Cron::pay_now();
 			$options[ 'schedule' ] = $old_schedule;
-			WCV_Cron::schedule_cron( $old_schedule );
-			add_settings_error( WC_Vendors::$pv_options->id, 'save_options', $return[ 'message' ], $return[ 'status' ] );
+			TGS_Cron::schedule_cron( $old_schedule );
+			add_settings_error( TGS_Vendors::$pv_options->id, 'save_options', $return[ 'message' ], $return[ 'status' ] );
 		}
 
 		return $options;
@@ -80,11 +80,11 @@ class WCV_Cron
 	 */
 	public static function pay_now()
 	{
-		$mass_pay = new WCV_Mass_Pay;
+		$mass_pay = new TGS_Mass_Pay;
 		$mass_pay = $mass_pay->do_payments();
 
 		$message = !empty( $mass_pay[ 'total' ] )
-			? $mass_pay[ 'msg' ] . '<br/>' . sprintf( __( 'Payment total: %s', 'wcvendors' ), woocommerce_price( $mass_pay[ 'total' ] ) )
+			? $mass_pay[ 'msg' ] . '<br/>' . sprintf( __( 'Payment total: %s', 'topgroupshops' ), woocommerce_price( $mass_pay[ 'total' ] ) )
 			: $mass_pay[ 'msg' ];
 
 		return array(
@@ -117,7 +117,7 @@ class WCV_Cron
 	public static function schedule_cron( $interval )
 	{
 		// Scheduled event
-		add_action( 'pv_schedule_mass_payments', array( 'WCV_Cron', 'pay_now' ) );
+		add_action( 'pv_schedule_mass_payments', array( 'TGS_Cron', 'pay_now' ) );
 
 		// Schedule the event
 		if ( !wp_next_scheduled( 'pv_schedule_mass_payments' ) ) {

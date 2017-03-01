@@ -1,4 +1,4 @@
-<h2><?php _e( 'Sales Report', 'wcvendors' ); ?></h2>
+<h2><?php _e( 'Sales Report', 'topgroupshops' ); ?></h2>
 
 <?php
 
@@ -6,7 +6,7 @@ if ( $datepicker !== 'false' ) {
 	wc_get_template( 'date-picker.php', array(
 													  'start_date' => $start_date,
 													  'end_date'   => $end_date,
-												 ), 'wc-vendors/dashboard/', wcv_plugin_dir . 'templates/dashboard/' );
+												 ), 'groupshops/dashboard/', tgs_plugin_dir . 'templates/dashboard/' );
 }
 
 ?>
@@ -14,10 +14,10 @@ if ( $datepicker !== 'false' ) {
 <table class="table table-condensed table-vendor-sales-report">
 	<thead>
 	<tr>
-	<th class="product-header"><?php _e( 'Product', 'wcvendors' ); ?></th>
-	<th class="quantity-header"><?php _e( 'Quantity', 'wcvendors' ) ?></th>
-	<th class="commission-header"><?php _e( 'Commission', 'wcvendors' ) ?></th>
-	<th class="rate-header"><?php _e( 'Rate', 'wcvendors' ) ?></th>
+	<th class="product-header"><?php _e( 'Product', 'topgroupshops' ); ?></th>
+	<th class="quantity-header"><?php _e( 'Quantity', 'topgroupshops' ) ?></th>
+	<th class="commission-header"><?php _e( 'Commission', 'topgroupshops' ) ?></th>
+	<th class="rate-header"><?php _e( 'Rate', 'topgroupshops' ) ?></th>
 	<th></th>
 	</thead>
 	<tbody>
@@ -44,7 +44,7 @@ if ( $datepicker !== 'false' ) {
 
 					<?php if ( $can_view_orders ) : ?>
 						<td>
-							<a href="<?php echo $product[ 'view_orders_url' ]; ?>"><?php _e( 'Show Orders', 'wcvendors' ); ?></a>
+							<a href="<?php echo $product[ 'view_orders_url' ]; ?>"><?php _e( 'Show Orders', 'topgroupshops' ); ?></a>
 						</td>
 					<?php endif; ?>
 
@@ -53,7 +53,7 @@ if ( $datepicker !== 'false' ) {
 			<?php endforeach; ?>
 
 			<tr>
-				<td><strong><?php _e( 'Totals', 'wcvendors' ); ?></strong></td>
+				<td><strong><?php _e( 'Totals', 'topgroupshops' ); ?></strong></td>
 				<td><?php echo $vendor_summary[ 'total_qty' ]; ?></td>
 				<td><?php echo woocommerce_price( $vendor_summary[ 'total_cost' ] ); ?></td>
 				<td></td>
@@ -68,7 +68,7 @@ if ( $datepicker !== 'false' ) {
 
 			<tr>
 				<td colspan="4"
-					style="text-align:center;"><?php _e( 'You have no sales during this period.', 'wcvendors' ); ?></td>
+					style="text-align:center;"><?php _e( 'You have no sales during this period.', 'topgroupshops' ); ?></td>
 			</tr>
 
 		<?php endif; ?>
@@ -79,7 +79,7 @@ if ( $datepicker !== 'false' ) {
 
 		<tr>
 			<td colspan="4"
-				style="text-align:center;"><?php _e( 'You haven\'t made any sales yet.', 'wcvendors' ); ?></td>
+				style="text-align:center;"><?php _e( 'You haven\'t made any sales yet.', 'topgroupshops' ); ?></td>
 		</tr>
 
 	<?php endif; ?>

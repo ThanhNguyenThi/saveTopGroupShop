@@ -3,12 +3,12 @@
 /**
  * My account views
  *
- * @author  Matt Gates <http://mgates.me>
+ * @author  Thanh Nguyen <http://topgroupshops.com.vn>
  * @package ProductVendor
  */
 
 
-class WCV_Orders
+class TGS_Orders
 {
 
 
@@ -17,15 +17,15 @@ class WCV_Orders
 	 */
 	function __construct()
 	{
-		$this->can_view_orders = WC_Vendors::$pv_options->get_option( 'can_show_orders' );
-		$this->can_export_csv  = WC_Vendors::$pv_options->get_option( 'can_export_csv' );
-		$this->can_view_emails = WC_Vendors::$pv_options->get_option( 'can_view_order_emails' );
+		$this->can_view_orders = TGS_Vendors::$pv_options->get_option( 'can_show_orders' );
+		$this->can_export_csv  = TGS_Vendors::$pv_options->get_option( 'can_export_csv' );
+		$this->can_view_emails = TGS_Vendors::$pv_options->get_option( 'can_view_order_emails' );
 
 		add_action( 'template_redirect', array( $this, 'check_access' ) );
 		add_action( 'template_redirect', array( $this, 'process_export_orders' ) ); 
 		// add_action( 'template_redirect', array( $this, 'display_product_orders' ) );
 		// add_action( 'wp', array( $this, 'display_shortcodes' ) );
-		add_shortcode( 'wcv_orders', array( $this, 'display_product_orders' ) );
+		add_shortcode( 'tgs_orders', array( $this, 'display_product_orders' ) );
 	}
 
 
@@ -36,8 +36,8 @@ class WCV_Orders
 	{
 
 		// This is required to support existing installations after WC 2.6 
-		$orders_page_id 	= WC_Vendors::$pv_options->get_option( 'orders_page' ); 
-		$orders_page_id 	= isset( $orders_page_id ) ? $orders_page_id : WC_Vendors::$pv_options->get_option( 'product_orders_page' ); 
+		$orders_page_id 	= TGS_Vendors::$pv_options->get_option( 'orders_page' ); 
+		$orders_page_id 	= isset( $orders_page_id ) ? $orders_page_id : TGS_Vendors::$pv_options->get_option( 'product_orders_page' ); 
 
 		$orders_page = $orders_page_id; 
 		// Only if the orders page is set should we check access 
@@ -55,7 +55,7 @@ class WCV_Orders
 	public function display_shortcodes()
 	{
 
-		if ( is_page( WC_Vendors::$pv_options->get_option( 'orders_page' ) ) && $this->can_view_orders ) {
+		if ( is_page( TGS_Vendors::$pv_options->get_option( 'orders_page' ) ) && $this->can_view_orders ) {
 
 			wp_enqueue_script( 'jquery' );
 
@@ -75,10 +75,10 @@ class WCV_Orders
 				}
 			} 
 
-			$this->orders = WCV_Queries::get_orders_for_products( $products, array( 'vendor_id' => get_current_user_id() ) );
+			$this->orders = TGS_Queries::get_orders_for_products( $products, array( 'vendor_id' => get_current_user_id() ) );
 
 			add_action( 'init', array( $this, 'verify_order_access' ) );
-			add_shortcode( 'wcv_orders', array( $this, 'display_product_orders' ) );
+			add_shortcode( 'tgs_orders', array( $this, 'display_product_orders' ) );
 
 			if ( $this->can_export_csv && !empty( $_POST[ 'export_orders' ] ) ) {
 				$this->download_csv();
@@ -97,7 +97,7 @@ class WCV_Orders
 
 		if ( empty( $_GET[ 'orders_for_product' ] ) ) {
 
-			return __( 'You haven\'t selected a product\'s orders to view! Please go back to the Vendor Dashboard and click Show Orders on the product you\'d like to view.', 'wcvendors' );
+			return __( 'You haven\'t selected a product\'s orders to view! Please go back to the Vendor Dashboard and click Show Orders on the product you\'d like to view.', 'topgroupshops' );
 		
 		} else { 
 			$this->product_id = !empty( $_GET[ 'orders_for_product' ] ) ? (int) $_GET[ 'orders_for_product' ] : false;
@@ -116,11 +116,11 @@ class WCV_Orders
 				}
 			} 
 
-			$this->orders = WCV_Queries::get_orders_for_products( $products, array( 'vendor_id' => get_current_user_id() ) );
+			$this->orders = TGS_Queries::get_orders_for_products( $products, array( 'vendor_id' => get_current_user_id() ) );
 		}
 
 		if ( !$this->orders ) {
-			return __( 'No orders.', 'wcvendors' );
+			return __( 'No orders.', 'topgroupshops' );
 		}
 
 		if ( $this->can_export_csv && !empty( $_POST[ 'export_orders' ] ) ) {
@@ -138,12 +138,12 @@ class WCV_Orders
 	{
 		if ( !$this->orders ) return false;
 
-		extract( WCV_Orders::format_order_details( $this->orders, $this->product_id ) );
-		$headers = WCV_Orders::get_headers();
+		extract( TGS_Orders::format_order_details( $this->orders, $this->product_id ) );
+		$headers = TGS_Orders::get_headers();
 
 		// Export the CSV
-		require_once wcv_plugin_dir . 'classes/front/orders/class-export-csv.php';
-		WCV_Export_CSV::output_csv( $this->product_id, $headers, $body, $items );
+		require_once tgs_plugin_dir . 'classes/front/orders/class-export-csv.php';
+		TGS_Export_CSV::output_csv( $this->product_id, $headers, $body, $items );
 	}
 
 
@@ -155,15 +155,15 @@ class WCV_Orders
 	public function display_product_orders()
 	{
 
-		if ( !WCV_Vendors::is_vendor( get_current_user_id() ) ) {
+		if ( !TGS_Function_Vendors::is_vendor( get_current_user_id() ) ) {
 			ob_start();
-				wc_get_template( 'denied.php', array(), 'wc-vendors/dashboard/', wcv_plugin_dir . 'templates/dashboard/' );
+				wc_get_template( 'denied.php', array(), 'groupshops/dashboard/', tgs_plugin_dir . 'templates/dashboard/' );
 			return ob_get_clean();
 		}
 
 		if ( empty( $_GET[ 'orders_for_product' ] ) ) {
 
-			return __( 'You haven\'t selected a product\'s orders to view! Please go back to the Vendor Dashboard and click Show Orders on the product you\'d like to view.', 'wcvendors' );
+			return __( 'You haven\'t selected a product\'s orders to view! Please go back to the Vendor Dashboard and click Show Orders on the product you\'d like to view.', 'topgroupshops' );
 		
 		} else { 
 			$this->product_id = !empty( $_GET[ 'orders_for_product' ] ) ? (int) $_GET[ 'orders_for_product' ] : false;
@@ -182,16 +182,16 @@ class WCV_Orders
 				}
 			} 
 
-			$this->orders = WCV_Queries::get_orders_for_products( $products, array( 'vendor_id' => get_current_user_id() ) );
+			$this->orders = TGS_Queries::get_orders_for_products( $products, array( 'vendor_id' => get_current_user_id() ) );
 		}
 
 		if ( !$this->orders ) {
-			return __( 'No orders.', 'wcvendors' );
+			return __( 'No orders.', 'topgroupshops' );
 		}
 
 		if ( !empty( $_POST[ 'submit_comment' ] ) ) {
-			require_once wcv_plugin_dir . 'classes/front/orders/class-submit-comment.php';
-			WCV_Submit_Comment::new_comment( $this->orders );
+			require_once tgs_plugin_dir . 'classes/front/orders/class-submit-comment.php';
+			TGS_Submit_Comment::new_comment( $this->orders );
 		}
 
 		if ( isset( $_POST[ 'mark_shipped' ] ) ) {
@@ -200,11 +200,11 @@ class WCV_Orders
 			exit;
 		}
 
-		$headers = WCV_Orders::get_headers();
-		$all     = WCV_Orders::format_order_details( $this->orders, $this->product_id );
+		$headers = TGS_Orders::get_headers();
+		$all     = TGS_Orders::format_order_details( $this->orders, $this->product_id );
 
-		wp_enqueue_style( 'pv_frontend_style', wcv_assets_url . 'css/wcv-frontend.css' );
-		wp_enqueue_script( 'pv_frontend_script', wcv_assets_url . 'js/front-orders.js' );
+		wp_enqueue_style( 'pv_frontend_style', tgs_assets_url . 'css/tgs-frontend.css' );
+		wp_enqueue_script( 'pv_frontend_script', tgs_assets_url . 'js/front-orders.js' );
 
 		$providers 		= array(); 
 		$provider_array = array(); 
@@ -223,7 +223,7 @@ class WCV_Orders
 		
 		// Show the Export CSV button
 		if ( $this->can_export_csv ) {
-			wc_get_template( 'csv-export.php', array(), 'wc-vendors/orders/', wcv_plugin_dir . 'templates/orders/' );
+			wc_get_template( 'csv-export.php', array(), 'groupshops/orders/', tgs_plugin_dir . 'templates/orders/' );
 		}
 
 		wc_get_template( 'orders.php', array(
@@ -233,7 +233,7 @@ class WCV_Orders
 													 'product_id'     => $all[ 'product_id' ],
 													 'providers'      => $providers,
 													 'provider_array' => $provider_array, 
-												), 'wc-vendors/orders/', wcv_plugin_dir . 'templates/orders/' );
+												), 'groupshops/orders/', wcv_plugin_dir . 'templates/orders/' );
 
 	} // display_product_orders() 
 
@@ -246,15 +246,15 @@ class WCV_Orders
 	public function get_headers()
 	{
 		$headers = array(
-			'order'   => __( 'Order', 'wcvendors' ),
-			'product' => __( 'Product Title', 'wcvendors' ),
-			'name'    => __( 'Full name', 'wcvendors' ),
-			'address' => __( 'Address', 'wcvendors' ),
-			'city'    => __( 'City', 'wcvendors' ),
-			'state'   => __( 'State', 'wcvendors' ),
-			'zip'     => __( 'Zip', 'wcvendors' ),
-			'email'   => __( 'Email address', 'wcvendors' ),
-			'date'    => __( 'Date', 'wcvendors' ),
+			'order'   => __( 'Order', 'topgroupshops' ),
+			'product' => __( 'Product Title', 'topgroupshops' ),
+			'name'    => __( 'Full name', 'topgroupshops' ),
+			'address' => __( 'Address', 'topgroupshops' ),
+			'city'    => __( 'City', 'topgroupshops' ),
+			'state'   => __( 'State', 'topgroupshops' ),
+			'zip'     => __( 'Zip', 'topgroupshops' ),
+			'email'   => __( 'Email address', 'topgroupshops' ),
+			'date'    => __( 'Date', 'topgroupshops' ),
 		);
 
 		if ( !$this->can_view_emails ) {

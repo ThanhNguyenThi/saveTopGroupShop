@@ -3,12 +3,12 @@
 /**
  * Report views
  *
- * @author  Matt Gates <http://mgates.me>
+ * @author  Thanh Nguyen <http://topgroupshops.com.vn>
  * @package ProductVendor
  */
 
 
-class WCV_Vendor_Reports
+class TGS_Vendor_Reports
 {
 
 
@@ -74,7 +74,7 @@ class WCV_Vendor_Reports
 	 */
 	public function filter_products( $orders )
 	{
-		$products = WCV_Vendors::get_vendor_products( $this->vendor_id );
+		$products = TGS_Function_Vendors::get_vendor_products( $this->vendor_id );
 
 		$ids = array();
 		foreach ( $products as $product ) {
@@ -88,7 +88,7 @@ class WCV_Vendor_Reports
 				continue;
 			} else {
 				if ( !empty( $order->line_total ) ) {
-					$orders[ $key ]->line_total = WCV_Commission::calculate_commission( $order->line_total, $order->product_id, $order, $order->qty );
+					$orders[ $key ]->line_total = TGS_Commission::calculate_commission( $order->line_total, $order->product_id, $order, $order->qty );
 				}
 			}
 
@@ -107,7 +107,7 @@ class WCV_Vendor_Reports
 	 */
 	public function filter_products_json( $products )
 	{
-		$vendor_products = WCV_Vendors::get_vendor_products( $this->vendor_id );
+		$vendor_products = TGS_Function_Vendors::get_vendor_products( $this->vendor_id );
 
 		$ids = array();
 		foreach ( $vendor_products as $vendor_product ) {

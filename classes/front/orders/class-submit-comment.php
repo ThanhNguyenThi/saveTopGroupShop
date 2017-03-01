@@ -1,6 +1,6 @@
 <?php
 
-class WCV_Submit_Comment
+class TGS_Submit_Comment
 {
 
 	/**
@@ -22,7 +22,7 @@ class WCV_Submit_Comment
 
 		// Check if this product belongs to the vendor submitting the comment
 		$product_id = (int) $_POST[ 'product_id' ];
-		$author     = WCV_Vendors::get_vendor_from_product( $product_id );
+		$author     = TGS_Function_Vendors::get_vendor_from_product( $product_id );
 		if ( $author != $user ) return false;
 
 		// Find the order belonging to this comment
@@ -38,7 +38,7 @@ class WCV_Submit_Comment
 
 		// Don't submit empty comments
 		if ( empty( $_POST[ 'comment_text' ] ) ) {
-			wc_add_notice( __( 'You\'ve left the comment field empty!', 'wcvendors' ), 'error' );
+			wc_add_notice( __( 'You\'ve left the comment field empty!', 'topgroupshops' ), 'error' );
 
 			return false;
 		}
@@ -60,7 +60,7 @@ class WCV_Submit_Comment
 			$found_order->add_order_note( $comment, 1 );
 			remove_filter( 'woocommerce_new_order_note_data', array( __CLASS__, 'filter_comment' ), 10, 2 );
 
-			wc_add_notice( __( 'Success. The customer has been notified of your comment.', 'wcvendors' ), 'success' );
+			wc_add_notice( __( 'Success. The customer has been notified of your comment.', 'topgroupshops' ), 'success' );
 		}
 
 	}
@@ -70,8 +70,8 @@ class WCV_Submit_Comment
 		$user_id = get_current_user_id();
 
 		$commentdata[ 'user_id' ]              = $user_id;
-		$commentdata[ 'comment_author' ]       = WCV_Vendors::get_vendor_shop_name( $user_id );
-		$commentdata[ 'comment_author_url' ]   = WCV_Vendors::get_vendor_shop_page( $user_id );
+		$commentdata[ 'comment_author' ]       = TGS_Function_Vendors::get_vendor_shop_name( $user_id );
+		$commentdata[ 'comment_author_url' ]   = TGS_Function_Vendors::get_vendor_shop_page( $user_id );
 		$commentdata[ 'comment_author_email' ] = wp_get_current_user()->user_email;
 
 		return $commentdata;
