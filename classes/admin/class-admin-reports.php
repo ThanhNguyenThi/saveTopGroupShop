@@ -38,7 +38,7 @@ class TGS_Admin_Reports
 	function reports_tab( $reports )
 	{
 		$reports[ 'vendors' ] = array(
-			'title'  => __( 'WC Vendors', 'topgroupshops' ),
+			'title'  => __( 'Group Shops', 'topgroupshops' ),
 			'charts' => array(
 				array(
 					'title'       => __( 'Overview', 'topgroupshops' ),
